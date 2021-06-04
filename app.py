@@ -1,4 +1,5 @@
 from flask import Flask, request, url_for, session, redirect, render_template
+import json
 
 app = Flask(__name__)
 
@@ -9,7 +10,15 @@ def index():
 
 @app.route("/oauth")
 def oauth():
-    return "ohno"
+    with open('client_ID.json') as client_id:
+        data = json.load(client_id)
+    
+    auth_uri = data["web"]["auth_uri"]
+    client_id = data["web"]["client_id"]
+    redirect_uris = data["web"]["redirect_uris"]
+    #need to creadte redirect uri
+    print(data["web"]["project_id"])
+    return data
 
 @app.route("/success")
 def suscess():
