@@ -1,5 +1,5 @@
 from flask import Flask, request, url_for, session, redirect, render_template
-import json
+import json, requests
 
 app = Flask(__name__)
 
@@ -12,17 +12,34 @@ def index():
 def oauth():
     with open('client_ID.json') as client_id:
         data = json.load(client_id)
-    
+
     auth_uri = data["web"]["auth_uri"]
     client_id = data["web"]["client_id"]
     redirect_uris = data["web"]["redirect_uris"][0]
-    total_auth_uri = auth_uri + "?" + "response_type=code" + "&" + f"client_id={client_id}" + "&" + f"redirect_uri={redirect_uris}" + "&" + "scope=https://www.googleapis.com/auth/fitness.nutrition.read" + "&" + "state=1234"
+    response_type = "code"
+    
+    query_dict = {
+        "response_type": response_type,
+        "client_id": client_id,
+        "redirect_uri": redirect_uris,
+        "scope": "https://www.googleapis.com/auth/fitness.nutrition.read",
+        "state": "1234"
+    }
 
-    # print(total_auth_uri)
+    total_auth_uri = auth_uri + "?" + list(query_dict.items())[0][0] + "=" + list(query_dict.items())[0][1]
+    for i in range (1, len(query_dict)):
+        total_auth_uri = total_auth_uri + "&" + list(query_dict.items())[i][0] + "=" + list(query_dict.items())[i][1]
     return f"<a href={total_auth_uri}/> oauth</a>"
 
 @app.route("/success")
-def success(): #need to determine how to use get code and exchange for access token
+def success(): #need to determine how to exchange code for access token
+    code = request.args.get('code')
+
+    with open('client_ID.json') as client_id:
+        data = json.load(client_id)
+    token_uri = data["web"]["token_uri"]
+
+    # requests.post
     return "Successful redirection!"
 
 if __name__ == "__main__":
