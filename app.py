@@ -32,15 +32,37 @@ def oauth():
     return f"<a href={total_auth_uri}/> oauth</a>"
 
 @app.route("/success")
-def success(): #need to determine how to exchange code for access token
+def success(): 
     code = request.args.get('code')
 
     with open('client_ID.json') as client_id:
         data = json.load(client_id)
     token_uri = data["web"]["token_uri"]
+    client_id = data["web"]["client_id"]
+    redirect_uris = data["web"]["redirect_uris"][0]
+    client_secret = data["web"]["client_secret"]
 
-    # requests.post
+    query_dict = {
+        "code": code,
+        "redirect_uri": redirect_uris,
+        "client_id": client_id,
+        "client_secret": client_secret,
+        "grant_type": "authorization_code",
+    }
+    r = requests.post(token_uri, params = query_dict)
+    print(r.encoding)
+    access_token = r.json()['access_token']
+    
+    request_uri = "https://www.googleapis.com/fitness/v1/users/me/dataSources"
+    headers = {
+        "Authorization": f"Bearer {access_token}"
+    }
+    p = requests.get(request_uri, headers = headers)
+    print(p.text)
     return "Successful redirection!"
+
+#Need to determine how to get nutrional data
+
 
 if __name__ == "__main__":
     app.run(ssl_context='adhoc') #doesn't seem to make the server run using https. Use "flask run --cert=adhoc" on the command line to enable https
