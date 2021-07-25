@@ -2,3 +2,4 @@ __pycache__/
 client_ID.json
 env
 .vscode/
+mfp_login.html
