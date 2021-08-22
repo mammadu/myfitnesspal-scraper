@@ -3,3 +3,6 @@ client_ID.json
 env
 .vscode/
 mfp_login.html
+login_info
+mfp_data_page.html
+mfp_login_page.html
