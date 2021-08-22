@@ -9,7 +9,8 @@
 
 from bs4 import BeautifulSoup as bs
 import requests
-from werkzeug import datastructures
+import list_of_dates
+
 s = requests.Session() #sessions allows some data to persist throughout requests
 
 #logging in
@@ -22,7 +23,7 @@ bs_content = bs(login_page.content, "lxml")
 #     file.write(login_page.text)
 
 #get authentication token - may not be needed
-auth_token = bs_content.find("form").find("input" , {"name": "authenticity_token"})["value"]
+# auth_token = bs_content.find("form").find("input" , {"name": "authenticity_token"})["value"]
 
 #load in username and password
 with open("login_info") as file:
@@ -49,24 +50,48 @@ print(x)
 
 #create the webpage url to access food diary information
 base_url = 'https://www.myfitnesspal.com/food/diary'
-date = '2021-07-24'
-query_dict = {
-    "date" : date
-}
-data_url = base_url + "?" + list(query_dict.items())[0][0] + "=" + list(query_dict.items())[0][1]
 
-#get request for diary page
-data_page = s.get(data_url)
-# print(home_page.content)
+start = '2021-08-08'
+end = '2021-08-22'
+
+date_range = list_of_dates.list_of_dates(start, end)
+
+
+calorie_surplus = 0
+
+for i in range(0, len(date_range)):
+    date = date_range[i]
+    query_dict = {
+        "date" : date
+    }
+    data_url = base_url + "?" + list(query_dict.items())[0][0] + "=" + list(query_dict.items())[0][1]
+
+    #get request for diary page
+    data_page = s.get(data_url)
+    data_page_content = bs(data_page.content, "lxml")
+
+    #get calories for the day
+    remaining_calories = data_page_content.find("tr", {"class": "total remaining"}).find("td").next_sibling.next_sibling.contents[0]
+    remaining_calories = str(remaining_calories)
+
+    if remaining_calories[0] == '-':
+        remaining_calories = int(remaining_calories[1:].replace(',',''))
+        remaining_calories = -1 * remaining_calories
+    else:
+        remaining_calories = int(remaining_calories.replace(',',''))
+
+    calorie_surplus = calorie_surplus + remaining_calories
+    print(date)
+    print(calorie_surplus)
 
 #write diary to html for debugging
-with open("mfp_data_page.html", "w") as main_page:
-    main_page.write(data_page.text)
+# with open("mfp_data_page.html", "w") as main_page:
+#     main_page.write(data_page.text)
 
-# print(login_data)
 s.close()
 
 # todo
-    #Access calorie information over date range
     #store calorie information over date range
     #manipulate calorie information to create calorie accounting
+
+    #create main file that has plan of what I want for the project
