@@ -3,7 +3,9 @@
 #     Login to webpage with user information
 #     navigate to food diary web page
 #     search webpage for calories remaining
-#     Accumulate calories remaining for up to 2 weeks before resetting
+#     Accumulate calories for the current month
+#     display number of calories over budget
+#     save data for next session
 
 
 

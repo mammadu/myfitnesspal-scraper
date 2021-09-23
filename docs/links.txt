@@ -1,0 +1,8 @@
+#logging in to websites
+https://linuxhint.com/logging_into_websites_python/
+
+#Using oauth to log in
+https://aaronparecki.com/oauth-2-simplified/
+
+#Using google fit apis
+https://developers.google.com/fit/rest/v1/get-started

@@ -8,6 +8,8 @@ def index():
     oauth_address = url_for('oauth')
     return f"<a href={oauth_address}>login</a>"
 
+
+
 @app.route("/oauth")
 def oauth():
     with open('client_ID.json') as client_id:
