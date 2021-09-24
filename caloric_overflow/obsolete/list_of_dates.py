@@ -1,6 +1,7 @@
 import datetime
 
 def list_of_dates(start_date, end_date):
+    
     start = datetime.datetime.strptime(start_date, '%Y-%m-%d')
     end = datetime.datetime.strptime(end_date, '%Y-%m-%d')
 

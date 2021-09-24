@@ -6,3 +6,6 @@ https://aaronparecki.com/oauth-2-simplified/
 
 #Using google fit apis
 https://developers.google.com/fit/rest/v1/get-started
+
+#Structuring Your Project
+https://docs.python-guide.org/writing/structure/?fbclid=IwAR20G3Bylx_B5u3eQxthAL69Mc8FpHIl9JtNI-cWOECx6vAvzPOjAbOmdiE

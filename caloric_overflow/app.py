@@ -8,6 +8,7 @@
 
 from flask import Flask, request, url_for, session, redirect, render_template
 import json, requests
+import mfp_scraper as mfps
 
 app = Flask(__name__)
 
@@ -18,6 +19,9 @@ def index():
 
 @app.route("/calorie_overflow")
 def calorie_overflow():
+    session = mfps.login('username','password')
+    caloric_overflow = mfps.caloric_overflow_for_month(session)
+    print(caloric_overflow)
     return "calorie overflow"
 
 if __name__ == "__main__":
@@ -25,4 +29,7 @@ if __name__ == "__main__":
 
 # todo:
 #     Create link to calorie overflow page on index page
-#     better organize various python files so they do one thin and one thing only
+#     Create method to get user login info
+#     Print out how many calories one went over for the month
+#     Find out how to make program run faster
+#         Perhaps find out how to save information so not so many webpages need to be downloaded?

@@ -1,79 +1,31 @@
-# plan of attack
-#     Get webpage with requests library
-#     Login to webpage with user information
-#     navigate to food diary web page
-#     search webpage for calories remaining
-#     Accumulate calories for the current month
-#     display number of calories over budget
-#     save data for next session
-
-
-
 from bs4 import BeautifulSoup as bs
-import requests
-import list_of_dates
+import requests, datetime
 
-s = requests.Session() #sessions allows some data to persist throughout requests
+def login(username, password):
+    session = requests.Session()
+    
+    login_url = "https://www.myfitnesspal.com/account/login"
 
-#logging in
-login_url = "https://www.myfitnesspal.com/account/login"
-login_page = s.get(login_url)
-bs_content = bs(login_page.content, "lxml")
-
-#save the login page for debugging
-# with open("mfp_login_page.html", "w") as file:
-#     file.write(login_page.text)
-
-#get authentication token - may not be needed
-# auth_token = bs_content.find("form").find("input" , {"name": "authenticity_token"})["value"]
-
-#load in username and password
-with open("login_info") as file:
-    user = file.readline()[:-1] #go to -1 to avoid the newline character
-    pw = file.readline()
-
-#data to be sent in post request
-login_data = {
-    # "utf8": "✓",
-    # "authenticity_token": auth_token,
-    "username": user,
-    "password": pw,
-    # "remember_me": 1,
-}
-
-#login headers to make the website think the program is a browser
-login_headers = {
-    "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36"
-}
-
-#post to the website with the url, data, and headers
-x = s.post(login_url, login_data, headers=login_headers)
-print(x)
-
-#create the webpage url to access food diary information
-base_url = 'https://www.myfitnesspal.com/food/diary'
-
-start = '2021-08-08'
-end = '2021-08-22'
-
-date_range = list_of_dates.list_of_dates(start, end)
-
-
-calorie_surplus = 0
-
-for i in range(0, len(date_range)):
-    date = date_range[i]
-    query_dict = {
-        "date" : date
+    login_data = {
+    "username": username,
+    "password": password,
     }
-    data_url = base_url + "?" + list(query_dict.items())[0][0] + "=" + list(query_dict.items())[0][1]
 
-    #get request for diary page
-    data_page = s.get(data_url)
-    data_page_content = bs(data_page.content, "lxml")
+    login_headers = {
+    "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36"
+    }
 
-    #get calories for the day
-    remaining_calories = data_page_content.find("tr", {"class": "total remaining"}).find("td").next_sibling.next_sibling.contents[0]
+    login_repsonse = session.post(login_url, login_data, headers=login_headers)
+    # print(login_repsonse)
+    return session
+
+def get_page_content(url, session):
+    page = session.get(url)
+    page_content = bs(page.content, "lxml")
+    return page_content
+
+def find_remaining_calories(page_content):
+    remaining_calories = page_content.find("tr", {"class": "total remaining"}).find("td").next_sibling.next_sibling.contents[0]
     remaining_calories = str(remaining_calories)
 
     if remaining_calories[0] == '-':
@@ -82,18 +34,72 @@ for i in range(0, len(date_range)):
     else:
         remaining_calories = int(remaining_calories.replace(',',''))
 
-    calorie_surplus = calorie_surplus + remaining_calories
-    print(date)
-    print(calorie_surplus)
+    return remaining_calories
 
-#write diary to html for debugging
-# with open("mfp_data_page.html", "w") as main_page:
-#     main_page.write(data_page.text)
+def ymd_to_datetime(ymd):
+    datetime_object = datetime.datetime.strptime(ymd, '%Y-%m-%d')
+    return datetime_object
 
-s.close()
+def datetime_to_ymd(datetime_object):
+    formatted_day = datetime_object.strftime("%Y-%m-%d")
+    return formatted_day
 
-# todo
-    #store calorie information over date range
-    #manipulate calorie information to create calorie accounting
+def list_of_dates(start_date, end_date):
+    
+    start = ymd_to_datetime(start_date)
+    end = ymd_to_datetime(end_date)
 
-    #create main file that has plan of what I want for the project
+    delta = end - start
+
+    date_list = []
+
+    for i in range(0, (end - start).days):
+        day = start + datetime.timedelta(days = i)
+        formatted_day = datetime_to_ymd(day)
+        date_list.append(formatted_day)
+
+    return date_list
+
+def elapsed_days_in_month():
+    start_date = datetime_to_ymd(datetime.datetime.today().replace(day=1))
+    end_date = datetime_to_ymd(datetime.datetime.today())
+    elapsed_days_list = list_of_dates(start_date, end_date)
+    return elapsed_days_list
+
+def url_from_date(date):
+    base_url = 'https://www.myfitnesspal.com/food/diary'
+    query_dict = {
+        "date" : date
+    }
+    total_url = base_url + "?" + list(query_dict.items())[0][0] + "=" + list(query_dict.items())[0][1]
+    return total_url
+
+def list_of_urls(list_of_dates):
+    url_list = []
+    for i in range (0, len(list_of_dates)):
+        current_url = url_from_date(list_of_dates[i])
+        url_list.append(current_url)
+    return url_list
+
+def get_multiple_page_content(list_of_urls, session):
+    page_content_list = []
+    for i in range(0, len(list_of_urls)):
+        page_content = get_page_content(list_of_urls[i], session)
+        page_content_list.append(page_content)
+    return page_content_list
+
+def remaining_calories_sum(page_content_list):
+    total_remaining_calories = 0
+    for i in range (0, len(page_content_list)):
+        current_remaining_calories = find_remaining_calories(page_content_list[i])
+        print(current_remaining_calories)
+        total_remaining_calories = total_remaining_calories + current_remaining_calories
+    return total_remaining_calories
+
+def caloric_overflow_for_month(session):
+    passed_days = elapsed_days_in_month()
+    url_list = list_of_urls(passed_days)
+    page_content_list = get_multiple_page_content(url_list, session)
+    calorie_overflow = remaining_calories_sum(page_content_list)
+    return calorie_overflow
+
