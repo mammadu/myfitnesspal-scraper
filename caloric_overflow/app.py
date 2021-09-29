@@ -6,23 +6,29 @@
 #     Weight trend shows rate of weight gain based upon recent weight entries in google fit (similar to tdee tracker)
 
 
-from flask import Flask, request, url_for, session, redirect, render_template
-import json, requests
+from flask import Flask, url_for
 import mfp_scraper as mfps
 
 app = Flask(__name__)
+
 
 @app.route("/")
 def index():
     index_welcome = "This website shows your calorie overflow and weight gain. Please select one of the options"
     return index_welcome
 
+
 @app.route("/calorie_overflow")
 def calorie_overflow():
-    session = mfps.login('username','password')
-    caloric_overflow = mfps.caloric_overflow_for_month(session)
+    scraper = mfps.scraper()
+    with open("login_info") as file:
+        user = file.readline()[:-1]  # go to -1 to avoid the newline character
+        pw = file.readline()
+    scraper.login(user, pw)
+    caloric_overflow = scraper.caloric_overflow_for_month()
     print(caloric_overflow)
     return "calorie overflow"
+
 
 if __name__ == "__main__":
     app.run(ssl_context='adhoc')
@@ -33,3 +39,4 @@ if __name__ == "__main__":
 #     Print out how many calories one went over for the month
 #     Find out how to make program run faster
 #         Perhaps find out how to save information so not so many webpages need to be downloaded?
+#         save to cookie
