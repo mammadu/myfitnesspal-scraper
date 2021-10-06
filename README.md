@@ -2,7 +2,7 @@
 This is the caloric overflow project. The goal of the project is to gather calorie and weight data to assist in managing weight. This will be achieved throught the following:
 
 ## Gather calorie data ##
-[ ] This will be done via web scraping. At this point, only myfitnesspal will be scraped
+- [ ] This will be done via web scraping. At this point, only myfitnesspal will be scraped
 
 ## Gather weight data ##
 [ ] This will be done via google fit's api
@@ -10,9 +10,8 @@ This is the caloric overflow project. The goal of the project is to gather calor
 ## Display weight/calorie insights ##
 Using calorie and weight data, the program will show:
 
-[ ] Rate of weight gain
-
-[ ] Caloric excess over goal for the month
+- [ ] Rate of weight gain
+- [ ] Caloric excess over goal for the month
 
 [ ] Estimated TDEE
 
