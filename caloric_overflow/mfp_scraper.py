@@ -8,6 +8,7 @@ class scraper:
 
     def __init__(self):
         self.session = requests.session()
+        self.username = ""
         self.last_scraped_date = ""
         self.calorie_overflow = 0
 
@@ -18,6 +19,8 @@ class scraper:
     def login(self, username, password):
 
         login_url = "https://www.myfitnesspal.com/account/login"
+
+        self.username = username
 
         login_data = {
             "username": username,
@@ -47,6 +50,30 @@ class scraper:
             remaining_calories = int(remaining_calories.replace(',', ''))
 
         return remaining_calories
+
+    def find_total_calories(self, page_content):
+        total_calories = page_content.find("tr", {"class": "total"}).find("td").next_sibling.next_sibling.contents[0]
+        total_calories = str(total_calories)
+
+        if total_calories[0] == '-':
+            total_calories = int(total_calories[1:].replace(',', ''))
+            total_calories = -1 * total_calories
+        else:
+            total_calories = int(total_calories.replace(',', ''))
+
+        return total_calories
+
+    def find_goal_calories(self, page_content):
+        goal_calories = page_content.find("tr", {"class": "total alt"}).find("td").next_sibling.next_sibling.contents[0]
+        goal_calories = str(goal_calories)
+
+        if goal_calories[0] == '-':
+            goal_calories = int(goal_calories[1:].replace(',', ''))
+            goal_calories = -1 * goal_calories
+        else:
+            goal_calories = int(goal_calories.replace(',', ''))
+
+        return goal_calories
 
     def ymd_to_datetime(self, ymd):
         datetime_object = datetime.datetime.strptime(ymd, '%Y-%m-%d')

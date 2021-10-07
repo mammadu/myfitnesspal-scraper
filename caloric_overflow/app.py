@@ -18,6 +18,17 @@ def index():
     return index_welcome
 
 
+# @app.route("/calorie_overflow")
+# def calorie_overflow():
+#     scraper = mfps.scraper()
+#     with open("login_info") as file:
+#         user = file.readline()[:-1]  # go to -1 to avoid the newline character
+#         pw = file.readline()
+#     scraper.login(user, pw)
+#     caloric_overflow = scraper.caloric_overflow_for_month()
+#     print(caloric_overflow)
+#     return "calorie overflow"
+
 @app.route("/calorie_overflow")
 def calorie_overflow():
     scraper = mfps.scraper()
@@ -25,8 +36,13 @@ def calorie_overflow():
         user = file.readline()[:-1]  # go to -1 to avoid the newline character
         pw = file.readline()
     scraper.login(user, pw)
-    caloric_overflow = scraper.caloric_overflow_for_month()
-    print(caloric_overflow)
+    url = "https://www.myfitnesspal.com/food/diary?date=2021-09-07"
+    remaining_calories = scraper.find_remaining_calories(scraper.get_page_content(url))
+    total_calories = scraper.find_total_calories(scraper.get_page_content(url))
+    goal_calories = scraper.find_goal_calories(scraper.get_page_content(url))
+    print(remaining_calories)
+    print(total_calories)
+    print(goal_calories)
     return "calorie overflow"
 
 
