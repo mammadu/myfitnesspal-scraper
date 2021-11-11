@@ -8,6 +8,7 @@
 
 from flask import Flask, url_for
 import mfp_scraper as mfps
+import db
 
 app = Flask(__name__)
 
@@ -29,6 +30,12 @@ def index():
 #     print(caloric_overflow)
 #     return "calorie overflow"
 
+# @app.route("/calorie_overflow")
+# def calorie_overflow():
+#     dbase = db.db()
+#     dbase.create_database("calories")
+#     return "calorie overflow"
+
 @app.route("/calorie_overflow")
 def calorie_overflow():
     scraper = mfps.scraper()
@@ -36,15 +43,10 @@ def calorie_overflow():
         user = file.readline()[:-1]  # go to -1 to avoid the newline character
         pw = file.readline()
     scraper.login(user, pw)
-    url = "https://www.myfitnesspal.com/food/diary?date=2021-09-07"
-    remaining_calories = scraper.find_remaining_calories(scraper.get_page_content(url))
-    total_calories = scraper.find_total_calories(scraper.get_page_content(url))
-    goal_calories = scraper.find_goal_calories(scraper.get_page_content(url))
-    print(remaining_calories)
-    print(total_calories)
-    print(goal_calories)
+    list_of_dates = scraper.list_of_dates("2021-10-01", "2021-10-11")
+    data = scraper.nutrition_dataframe(list_of_dates)
+    print(data)
     return "calorie overflow"
-
 
 if __name__ == "__main__":
     app.run(ssl_context='adhoc')
