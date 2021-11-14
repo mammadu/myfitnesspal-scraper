@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 # overall flow
 # Create url for user authorization
 # Create browser that goes to url
@@ -11,18 +13,23 @@
 
 
 from flask import Flask, request, url_for, session, redirect, render_template
-import json, requests, random, webbrowser, subprocess
+from datetime import datetime
+import json, requests, random, webbrowser, subprocess, os, time, string, hashlib, base64
 
-# app = Flask(__name__)
+def create_code_verifier(code_size):
+    allowed_chars = string.ascii_letters + string.digits + '-._~'
+    code_verifier = ''.join(random.choice(allowed_chars) for i in range(code_size))
+    return code_verifier
 
-# @app.route("/")
-# def index():
-#     oauth_address = url_for('oauth')
-#     return f"<a href={oauth_address}>login</a>"
+def create_code_challenge(code_verifier):
+    code_verifier_to_bytes = code_verifier.encode('utf-8') #convert code_verifier to bytes
+    hashed_object = hashlib.sha256(code_verifier_to_bytes) #create hash object from code_verifier_byres
+    digest_hashed_str = hashed_object.digest() #get hashed_object in bytes
+    base64_hexdigest_hashed_str = base64.urlsafe_b64encode(digest_hashed_str) #convert byte object to base64 byte string
+    code_challenge = str(base64_hexdigest_hashed_str, 'utf-8') #create utf-8 string from byte string
+    code_challenge = code_challenge[:-1] #for some reason, an '=' is added to the end of the code string, this line removes it
+    return code_challenge
 
-
-
-# @app.route("/oauth")
 def create_oauth_url(filepath):
     with open(filepath) as client_id:
         data = json.load(client_id)
@@ -32,13 +39,17 @@ def create_oauth_url(filepath):
     redirect_uris = data["web"]["redirect_uris"][0]
     response_type = "code"
     randstate = str(random.randrange(1000))
+    code_verifier = create_code_verifier(100)
+    code_challenge = create_code_challenge(code_verifier)
 
     query_dict = {
         "response_type": response_type,
         "client_id": client_id,
         "redirect_uri": redirect_uris,
         "scope": "https://www.googleapis.com/auth/fitness.nutrition.read",
-        "state": randstate
+        "state": randstate,
+        "code_challenge": code_challenge,
+        "code_challenge_method": "S256"
     }
 
     total_auth_uri = auth_uri + "?" + list(query_dict.items())[0][0] + "=" + list(query_dict.items())[0][1]
@@ -46,48 +57,50 @@ def create_oauth_url(filepath):
         total_auth_uri = total_auth_uri + "&" + list(query_dict.items())[i][0] + "=" + list(query_dict.items())[i][1]
     return total_auth_uri
 
-filepath = '../client_ID.json'
-url = create_oauth_url(filepath)
-server = subprocess.Popen(['/usr/bin/python3', './server_receiver.py'])
-print(server.pid)
-webbrowser.open_new(url)
-print(server.poll())
+def get_authorization_code():
+    filepath = '../client_ID.json'
+    url = create_oauth_url(filepath)
+    current_time = time.time()
+    server = subprocess.Popen(['/usr/bin/python3', './server_receiver.py'])
+    webbrowser.open_new(url)
 
+    while (current_time > os.path.getmtime("authorization_code.txt")):
+        continue
 
+    time.sleep(1)
+    server.kill()
 
-
-# @app.route("/success")
-# def success(): 
-#     code = request.args.get('code')
-
-#     with open('../client_ID.json') as client_id:
+# def create_token_url(filepath):
+#     with open(filepath) as client_id:
 #         data = json.load(client_id)
+
 #     token_uri = data["web"]["token_uri"]
 #     client_id = data["web"]["client_id"]
-#     redirect_uris = data["web"]["redirect_uris"][0]
-#     client_secret = data["web"]["client_secret"]
+#     code = ""
+#     randstate = str(random.randrange(1000))
+#     code_verifier = create_code_verifier(100)
+#     print(f"code_verifier = {code_verifier}")
+
+#     code_challenge = create_code_challenge(code_verifier)
+#     print(f"code_challenge = {code_challenge}")
 
 #     query_dict = {
-#         "code": code,
-#         "redirect_uri": redirect_uris,
+#         "response_type": response_type,
 #         "client_id": client_id,
-#         "client_secret": client_secret,
-#         "grant_type": "authorization_code",
+#         "redirect_uri": redirect_uris,
+#         "scope": "https://www.googleapis.com/auth/fitness.nutrition.read",
+#         "state": randstate,
+#         "code_challenge": code_challenge,
+#         "code_challenge_method": "S256"
 #     }
-#     r = requests.post(token_uri, params = query_dict)
-#     print(r.text)
-#     access_token = r.json()['access_token']
-    
-#     request_uri = "https://www.googleapis.com/fitness/v1/users/me/dataSources"
-#     headers = {
-#         "Authorization": f"Bearer {access_token}"
-#     }
-#     p = requests.get(request_uri, headers = headers)
-#     print(p.text)
-#     return "Successful redirection!"
 
-# #Need to determine how to get nutrional data
+#     total_token_uri = token_uri + "?" + list(query_dict.items())[0][0] + "=" + list(query_dict.items())[0][1]
+#     for i in range (1, len(query_dict)):
+#         total_auth_uri = total_auth_uri + "&" + list(query_dict.items())[i][0] + "=" + list(query_dict.items())[i][1]
+#     return total_auth_uri
+
+get_authorization_code()
+
+# print("hashed_code = ", hashed_code)
 
 
-# if __name__ == "__main__":
-#     app.run(ssl_context='adhoc') #doesn't seem to make the server run using https. Use "flask run --cert=adhoc" on the command line to enable https
