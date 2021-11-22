@@ -33,7 +33,7 @@ class scraper:
         }
 
         login_repsonse = self.session.post(login_url, login_data, headers=login_headers)
-        # print(login_repsonse)
+        print(login_repsonse)
 
     def get_page_content(self, url):
         page = self.session.get(url)
@@ -55,7 +55,7 @@ class scraper:
 
         date_list = []
 
-        for i in range(0, (end - start).days):
+        for i in range(0, (end - start).days + 1):
             day = start + datetime.timedelta(days=i)
             formatted_day = self.datetime_to_ymd(day)
             date_list.append(formatted_day)

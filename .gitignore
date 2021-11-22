@@ -4,3 +4,7 @@ env
 .vscode/
 *.html
 login_info
+*.code-workspace
+/myfitnesspal-scraper/unneeded/
+/myfitnesspal-scraper/obsolete
+/myfitnesspal_data/*.csv
