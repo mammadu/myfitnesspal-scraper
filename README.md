@@ -28,3 +28,4 @@ This program scrapes data from myfitnesspal and saves it to various locations
 1. Clone this repository
 2. Change directory to './myfitnesspal-scraper'
 3. Use python to execute 'run.py' (e.g. 'python3 run.py')
+4. Select option 0 to scrape from myfitnesspal. Enter login information in login_info file or manually
