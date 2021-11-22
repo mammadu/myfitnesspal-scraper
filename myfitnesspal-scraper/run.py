@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import mfp_scraper, pandas, os
+import mfp_scraper
 
 class frontend():
 
@@ -55,7 +55,7 @@ class frontend():
             "username": ""
             , "password": ""
         }
-        choice = input(f"use default login found in '{self.login_path}/login_info'? (y/n):")
+        choice = input(f"use default login found in '{self.login_path}/login_info'? (y/n): ")
         if choice.lower() == "y":
             with open(f"{self.login_path}/login_info", "r") as file:
                 username_line = file.readline()
@@ -78,12 +78,18 @@ class frontend():
         return data
 
     def save_to_csv(self, data):
+        save_name = "data.csv"
         choice = input("save to default path? (y/n): ")
         if choice.lower() == "y":
-            data.to_csv(f"{self.save_path}/data.csv")
+            save_location = f"{self.save_path}{save_name}"
         else:
             path = input("specify csv save path: ")
-            data.to_csv(f"{path}/data.csv")
+            save_location = f"{path}/{save_name}"
+        try:
+            print(f"saving to {save_location}")
+            data.to_csv(save_location)
+        except:
+            print(f"could not save to {save_location}")
 
 
 def main():

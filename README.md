@@ -1,23 +1,30 @@
 # Overview #
 
-This is the caloric overflow project. The goal of the project is to gather calorie and weight data to assist in managing weight. This will be achieved throught the following:
+This program scrapes data from myfitnesspal and saves it to various locations
 
-## Gather calorie data ##
+## Todo ##
 
-- [ ] This will be done via web scraping. At this point, only myfitnesspal will be scraped
-  - Currently able to scrape myfitnesspal data, working on speeding up data collection
+### Gather calorie data ##
 
-## Gather weight data ##
+- [x] Scrape from myfitnesspal
+- [ ] Speed up data collection
 
-- [ ] This will be done via google fit's api
-  - Created rudimentary implementation, need to work on saving data to file
+### Save to various locations ##
 
-## Display weight/calorie insights ##
+- [x] Save as a csv file
+- [ ] Save to google fit
+- [ ] Save to database
 
-Using calorie and weight data, the program will show:
+## Requirements ##
 
-- [ ] Rate of weight gain
-- [ ] Caloric excess over goal for the month
-- [ ] Estimated TDEE
-- [ ] Estimated Daily Calories needed for weight loss
-- [ ] A graphical view of weight, caloric intake, and TDEE
+### Python libraries ##
+
+- pandas
+- beautifulsoup
+- flask
+
+## How to run ##
+
+1. Clone this repository
+2. Change directory to './myfitnesspal-scraper'
+3. Use python to execute 'run.py' (e.g. 'python3 run.py')

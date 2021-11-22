@@ -123,6 +123,7 @@ class scraper:
     def get_multiple_page_content(self, list_of_urls):
         page_content_list = []
         for i in range(0, len(list_of_urls)):
+            print(f"downloading data from {list_of_urls[i]}")
             page_content = self.get_page_content(list_of_urls[i])
             page_content_list.append(page_content)
         return page_content_list
@@ -138,6 +139,7 @@ class scraper:
         url_list = self.list_of_urls(list_of_dates)
         page_content_list = self.get_multiple_page_content(url_list)
         for i in range(0, len(page_content_list)):
+            print(f"loading row for {list_of_dates[i]}")
             total_calorie = self.find_total_calories(page_content_list[i])
             goal_calorie = self.find_goal_calories(page_content_list[i])
             remaining_calorie = self.find_remaining_calories(page_content_list[i])
