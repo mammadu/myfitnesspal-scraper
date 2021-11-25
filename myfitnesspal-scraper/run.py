@@ -1,8 +1,11 @@
 #!/usr/bin/python3
 
 import mfp_scraper
+import chrono
 
 class frontend():
+
+    #Header
 
     def __init__(self):
         self.options = [
@@ -45,10 +48,26 @@ class frontend():
             except:
                 print("enter number of option")
 
-    def get_dates(self):
-        self.start_date = input("enter start date (YYY-MM-DD): ")
-        self.end_date = input("enter end date (YYY-MM-DD): ")
-        print()
+    def get_dates(self): #todo: implement logic to deal with bad dates
+        chron = chrono.chrono()
+        current_date = chron.today_to_ymd()
+        choice = input(f"scrape from {current_date} to {current_date}? (y/n): ")
+        if choice.lower() == "y":
+            self.start_date = current_date
+            self.end_date = current_date
+        else:
+            improper_dates = True
+            while improper_dates == True:
+                self.start_date = input("enter start date (YYYY-MM-DD): ")
+                self.end_date = input("enter end date (YYY-MM-DD): ")
+                if (chron.is_ymd_format(self.start_date) == False) or (chron.is_ymd_format(self.end_date) == False):
+                    print("dates are improperly formatted")
+                    continue
+                if chron.future_before_past(self.start_date, self.end_date):
+                    print("dates out of order")
+                else:
+                    improper_dates = False
+            print()
     
     def get_login(self):
         login = {
@@ -59,7 +78,7 @@ class frontend():
         if choice.lower() == "y":
             with open(f"{self.login_path}/login_info", "r") as file:
                 username_line = file.readline()
-                login["username"] = username_line.split("=")[1]
+                login["username"] = username_line.split("=")[1][:-1]
                 password_line = file.readline()
                 login["password"] = password_line.split("=")[1]
         else:
@@ -69,11 +88,12 @@ class frontend():
         return login
 
     def scrape_myfitnesspal(self):
-        self.get_dates()
         scraper = mfp_scraper.scraper()
         login = self.get_login()
         scraper.login(login["username"], login["password"])
-        list_of_dates = scraper.list_of_dates(self.start_date, self.end_date)
+        self.get_dates()
+        chron = chrono.chrono()
+        list_of_dates = chron.list_of_dates(self.start_date, self.end_date)
         data = scraper.nutrition_dataframe(list_of_dates)
         return data
 

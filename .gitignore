@@ -3,7 +3,7 @@ client_ID.json
 env
 .vscode/
 *.html
-# login_info
+login_info.txt
 *.code-workspace
 /myfitnesspal-scraper/unneeded/
 /myfitnesspal-scraper/obsolete
