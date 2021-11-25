@@ -2,6 +2,7 @@
 
 import mfp_scraper
 import chrono
+import getpass
 
 class frontend():
 
@@ -83,7 +84,7 @@ class frontend():
                 login["password"] = password_line.split("=")[1]
         else:
             login["username"] = input("Enter myfitnesspal username: ")
-            login["password"] = input("Enter myfitnesspal password: ")
+            login["password"] = getpass.getpass(prompt='Enter myfitnesspal password: ')
 
         return login
 

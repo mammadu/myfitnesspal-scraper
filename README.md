@@ -19,9 +19,13 @@ This program scrapes data from myfitnesspal and saves it to various locations
 
 ### Python libraries ##
 
-- pandas
 - beautifulsoup
+- requests
+- datetime
+- pandas
 - flask
+- getpass
+- lxml
 
 ## How to run ##
 
