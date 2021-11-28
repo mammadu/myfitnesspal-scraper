@@ -18,6 +18,7 @@ class frontend():
         self.start_date = ""
         self.end_date = ""
         self.login_path = ".."
+        self.login_filename = "login_info.txt"
         self.save_path = "../myfitnesspal_data/"
     
     def print_title(self):
@@ -75,9 +76,9 @@ class frontend():
             "username": ""
             , "password": ""
         }
-        choice = input(f"use default login found in '{self.login_path}/login_info'? (y/n): ")
+        choice = input(f"use default login found in '{self.login_path}/{self.login_filename}'? (y/n): ")
         if choice.lower() == "y":
-            with open(f"{self.login_path}/login_info", "r") as file:
+            with open(f"{self.login_path}/{self.login_filename}", "r") as file:
                 username_line = file.readline()
                 login["username"] = username_line.split("=")[1][:-1]
                 password_line = file.readline()
