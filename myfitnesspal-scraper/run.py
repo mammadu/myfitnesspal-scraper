@@ -76,7 +76,7 @@ class frontend():
             "username": ""
             , "password": ""
         }
-        choice = input(f"use default login found in '{self.login_path}/{self.login_filename}'? (y/n): ")
+        choice = input(f"use default login found in '{self.login_path}/{self.login_filename}'? (y/n): ") #make it so that you don't have to be in the proper location when executing run.py
         if choice.lower() == "y":
             with open(f"{self.login_path}/{self.login_filename}", "r") as file:
                 username_line = file.readline()
@@ -110,8 +110,9 @@ class frontend():
         try:
             print(f"saving to {save_location}")
             data.to_csv(save_location)
-        except:
-            print(f"could not save to {save_location}")
+        except Exception as ex:
+            print(f"could not save to {save_location}") #Figure out how to save without requiring sudo
+            raise ex
 
 
 def main():

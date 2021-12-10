@@ -7,12 +7,11 @@ setup(
     , url='https://github.com/mammadu/myfitnesspal-scraper'
     , python_requires='>=3.6'
     , install_requires = [
-        'beautifulsoup'
-        'requests'
-        'datetime'
-        'pandas'
-        'flask'
-        'getpass'
-        'lxml'
+        'beautifulsoup4'
+        , 'requests'
+        , 'datetime'
+        , 'pandas'
+        , 'flask'
+        , 'lxml'
     ]
 )
