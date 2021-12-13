@@ -3,10 +3,9 @@
 import mfp_scraper
 import chrono
 import getpass
+import pathlib
 
 class frontend():
-
-    #Header
 
     def __init__(self):
         self.options = [
@@ -14,12 +13,13 @@ class frontend():
         , "save to csv"
         , "save to google fit"
         , "save to MySQL database"
-    ]
+        ]
+        self.filename = pathlib.Path(__file__)
+        self.login_info_filepath = self.filename.parent.parent
+        self.login_info_filename = "login_info.txt"
+        self.save_path = self.filename.parent.parent.joinpath('myfitnesspal_data')
         self.start_date = ""
         self.end_date = ""
-        self.login_path = ".."
-        self.login_filename = "login_info.txt"
-        self.save_path = "../myfitnesspal_data/"
     
     def print_title(self):
         program_version = "0.1"
@@ -76,9 +76,10 @@ class frontend():
             "username": ""
             , "password": ""
         }
-        choice = input(f"use default login found in '{self.login_path}/{self.login_filename}'? (y/n): ") #make it so that you don't have to be in the proper location when executing run.py
+        full_login_info_path = self.login_info_filepath.joinpath(self.login_info_filename)
+        choice = input(f"use default login found in '{full_login_info_path}'? (y/n): ") #make it so that you don't have to be in the proper location when executing run.py
         if choice.lower() == "y":
-            with open(f"{self.login_path}/{self.login_filename}", "r") as file:
+            with open(f"{full_login_info_path}", "r") as file:
                 username_line = file.readline()
                 login["username"] = username_line.split("=")[1][:-1]
                 password_line = file.readline()
@@ -101,17 +102,17 @@ class frontend():
 
     def save_to_csv(self, data):
         save_name = "data.csv"
-        choice = input("save to default path? (y/n): ")
+        choice = input(f"save '{save_name}' to default path ('{self.save_path}')? (y/n): ")
         if choice.lower() == "y":
-            save_location = f"{self.save_path}{save_name}"
+            save_location = self.save_path.joinpath(save_name)
         else:
             path = input("specify csv save path: ")
-            save_location = f"{path}/{save_name}"
+            save_location = pathlib.Path(path).joinpath(save_name)
         try:
             print(f"saving to {save_location}")
             data.to_csv(save_location)
         except Exception as ex:
-            print(f"could not save to {save_location}") #Figure out how to save without requiring sudo
+            print(f"could not save to {save_location}")
             raise ex
 
 
@@ -124,7 +125,10 @@ def main():
         if terminal.options[int(user_input)] == "scrape myfitnesspal":
             data = terminal.scrape_myfitnesspal()
         elif terminal.options[int(user_input)] == "save to csv":
-            terminal.save_to_csv(data)
+            try:
+                terminal.save_to_csv(data)
+            except UnboundLocalError as ex:
+                print("you must first scrape myfitnesspal")
         else:
             print(f"Option {user_input} has not been implemented yet")
             print()
