@@ -7,4 +7,4 @@ login_info.txt
 *.code-workspace
 /myfitnesspal-scraper/unneeded/
 /myfitnesspal-scraper/obsolete
-/myfitnesspal_data/*.csv
+myfitnesspal_data/*.csv
