@@ -13,9 +13,23 @@ class scraper:
         self.last_scraped_date = ""
         self.calorie_overflow = 0
 
-    def save_to_object(self, last_scraped_date, calorie_overflow):
-        self.last_scraped_date = last_scraped_date
-        self.calorie_overflow = calorie_overflow
+    def get_page_content(self, page):
+        page_content = bs(page.text, "lxml")
+        return page_content
+
+    def get_page_content_from_url(self, url):
+        page = self.session.get(url)
+        page_content_from_url = self.get_page_content(page)
+        return page_content_from_url
+
+    def check_login_status(self, login_response_page):
+        login_response_content = self.get_page_content(login_response_page)
+        script = login_response_content.find('script', type="text/javascript")
+        if 'logged_in' in script.text:
+            logged_in = True
+        else:
+            logged_in = False
+        return logged_in
 
     def login(self, username, password):
 
@@ -33,12 +47,10 @@ class scraper:
         }
 
         login_repsonse = self.session.post(login_url, login_data, headers=login_headers)
-        print(login_repsonse)
+        login_success = self.check_login_status(login_repsonse)
+        return login_success
 
-    def get_page_content(self, url):
-        page = self.session.get(url)
-        page_content = bs(page.content, "lxml")
-        return page_content
+
 
     def ymd_to_datetime(self, ymd):
         datetime_object = datetime.datetime.strptime(ymd, '%Y-%m-%d')
@@ -49,7 +61,6 @@ class scraper:
         return formatted_day
 
     def list_of_dates(self, start_date, end_date):
-
         start = self.ymd_to_datetime(start_date)
         end = self.ymd_to_datetime(end_date)
 
@@ -61,12 +72,6 @@ class scraper:
             date_list.append(formatted_day)
 
         return date_list
-
-    # def elapsed_days_in_month(self):
-    #     start_date = self.datetime_to_ymd(datetime.datetime.today().replace(day=1))
-    #     end_date = self.datetime_to_ymd(datetime.datetime.today())
-    #     elapsed_days_list = self.list_of_dates(start_date, end_date)
-    #     return elapsed_days_list
 
     def url_from_date(self, date):
         base_url = 'https://www.myfitnesspal.com/food/diary'
@@ -124,7 +129,7 @@ class scraper:
         page_content_list = []
         for i in range(0, len(list_of_urls)):
             print(f"downloading data from {list_of_urls[i]}")
-            page_content = self.get_page_content(list_of_urls[i])
+            page_content = self.get_page_content_from_url(list_of_urls[i])
             page_content_list.append(page_content)
         return page_content_list
 
@@ -156,6 +161,11 @@ class scraper:
             total_remaining_calories = total_remaining_calories + current_remaining_calories
         return total_remaining_calories
 
+
+    # def save_to_object(self, last_scraped_date, calorie_overflow):
+    #     self.last_scraped_date = last_scraped_date
+    #     self.calorie_overflow = calorie_overflow
+
     # def caloric_overflow_for_month(self):
     #     passed_days = self.elapsed_days_in_month()
     #     url_list = self.list_of_urls(passed_days)
@@ -164,6 +174,13 @@ class scraper:
     #     today = self.datetime_to_ymd(datetime.datetime.today())
     #     self.save_to_object(today, calorie_overflow)
     #     return calorie_overflow
+
+        # def elapsed_days_in_month(self):
+    #     start_date = self.datetime_to_ymd(datetime.datetime.today().replace(day=1))
+    #     end_date = self.datetime_to_ymd(datetime.datetime.today())
+    #     elapsed_days_list = self.list_of_dates(start_date, end_date)
+    #     return elapsed_days_list
+
 
 # save data with the following columns:
 # Date	Weight	Daily calorie goal	Calorie total	Caloric excess	Monthly cumulative caloric excess

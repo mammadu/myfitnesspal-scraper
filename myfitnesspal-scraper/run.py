@@ -77,7 +77,7 @@ class frontend():
             , "password": ""
         }
         full_login_info_path = self.login_info_filepath.joinpath(self.login_info_filename)
-        choice = input(f"use default login found in '{full_login_info_path}'? (y/n): ") #make it so that you don't have to be in the proper location when executing run.py
+        choice = input(f"use default login found in '{full_login_info_path}'? (y/n): ")
         if choice.lower() == "y":
             with open(f"{full_login_info_path}", "r") as file:
                 username_line = file.readline()
@@ -93,11 +93,15 @@ class frontend():
     def scrape_myfitnesspal(self):
         scraper = mfp_scraper.scraper()
         login = self.get_login()
-        scraper.login(login["username"], login["password"])
-        self.get_dates()
-        chron = chrono.chrono()
-        list_of_dates = chron.list_of_dates(self.start_date, self.end_date)
-        data = scraper.nutrition_dataframe(list_of_dates)
+        login_success = scraper.login(login["username"], login["password"])
+        if login_success == True:
+            self.get_dates()
+            chron = chrono.chrono()
+            list_of_dates = chron.list_of_dates(self.start_date, self.end_date)
+            data = scraper.nutrition_dataframe(list_of_dates)
+        else:
+            print("Could not log in. Review myfitnesspal username and password")
+            data = None
         return data
 
     def save_to_csv(self, data):
@@ -111,9 +115,12 @@ class frontend():
         try:
             print(f"saving to {save_location}")
             data.to_csv(save_location)
+        except (UnboundLocalError, AttributeError) as ex:
+            print("you must first scrape myfitnesspal")
         except Exception as ex:
             print(f"could not save to {save_location}")
-            raise ex
+            # raise ex
+
 
 
 def main():
@@ -125,10 +132,7 @@ def main():
         if terminal.options[int(user_input)] == "scrape myfitnesspal":
             data = terminal.scrape_myfitnesspal()
         elif terminal.options[int(user_input)] == "save to csv":
-            try:
-                terminal.save_to_csv(data)
-            except UnboundLocalError as ex:
-                print("you must first scrape myfitnesspal")
+            terminal.save_to_csv(data)
         else:
             print(f"Option {user_input} has not been implemented yet")
             print()
