@@ -35,7 +35,7 @@ class scraper:
         base_url = "https://www.myfitnesspal.com"
         login_path = "account/login"
         login_url = '/'.join([base_url, login_path])
-        csrf_path = "api/auth//csrf"
+        csrf_path = "api/auth/csrf"
         csrf_url = '/'.join([base_url, csrf_path])
         login_json_path = "api/auth/callback/credentials"
         login_json_url = '/'.join([base_url, login_json_path])
