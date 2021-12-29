@@ -2,6 +2,11 @@
 
 This program scrapes data from myfitnesspal and saves it to various locations
 
+## Tested operating systems ##
+
+- Linux (Linux Mint)
+- Windows Subsystem for Linux (WSL Ubuntu)
+
 ## How to run ##
 
 1. Clone this repository

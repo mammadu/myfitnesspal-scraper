@@ -14,7 +14,7 @@ class frontend():
         , "save to google fit"
         , "save to MySQL database"
         ]
-        self.filename = pathlib.Path(__file__)
+        self.filename = pathlib.Path(__file__).resolve()
         self.login_info_filepath = self.filename.parent.parent
         self.login_info_filename = "login_info.txt"
         self.save_path = self.filename.parent.parent.joinpath('myfitnesspal_data')
@@ -77,6 +77,7 @@ class frontend():
             , "password": ""
         }
         full_login_info_path = self.login_info_filepath.joinpath(self.login_info_filename)
+        print(self.filename)
         choice = input(f"use default login found in '{full_login_info_path}'? (y/n): ")
         if choice.lower() == "y":
             with open(f"{full_login_info_path}", "r") as file:

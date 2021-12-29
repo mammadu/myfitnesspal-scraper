@@ -25,28 +25,37 @@ class scraper:
     def check_login_status(self, login_response_page):
         login_response_content = self.get_page_content(login_response_page)
         script = login_response_content.find('script', type="text/javascript")
-        if 'logged_in' in script.text:
+        if script != None and 'logged_in' in script.text:
             logged_in = True
         else:
             logged_in = False
         return logged_in
 
     def login(self, username, password):
+        base_url = "https://www.myfitnesspal.com"
+        login_path = "account/login"
+        login_url = '/'.join([base_url, login_path])
+        csrf_path = "api/auth/csrf"
+        csrf_url = '/'.join([base_url, csrf_path])
+        login_json_path = "api/auth/callback/credentials"
+        login_json_url = '/'.join([base_url, login_json_path])
 
-        login_url = "https://www.myfitnesspal.com/account/login"
+        csrf_response = self.session.get(csrf_url)
+        csrf_json = csrf_response.json()
+        token = csrf_json["csrfToken"]
 
         self.username = username
 
         login_data = {
-            "username": username,
-            "password": password,
+            "csrfToken": token
+            , "username": username
+            , "password": password
+            , "redirect": False
+            # , "json": True #may be need in future
+            , "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36"
         }
 
-        login_headers = {
-            "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36"
-        }
-
-        login_repsonse = self.session.post(login_url, login_data, headers=login_headers)
+        login_repsonse = self.session.post(login_json_url, data=login_data)
         login_success = self.check_login_status(login_repsonse)
         return login_success
 
