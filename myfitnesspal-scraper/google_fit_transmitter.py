@@ -21,6 +21,7 @@ def create_code_verifier(code_size):
     code_verifier = ''.join(random.choice(allowed_chars) for i in range(code_size))
     return code_verifier
 
+#debug
 # def create_code_challenge(code_verifier):
 #     code_verifier_to_bytes = code_verifier.encode('utf-8') #convert code_verifier to bytes
 #     hashed_object = hashlib.sha256(code_verifier_to_bytes) #create hash object from code_verifier_byres
@@ -111,6 +112,7 @@ def token_post_param(filepath):
         "redirect_uri": redirect_uris,
         "client_id": client_id,
         "client_secret": client_secret
+        #debug
         # , "code_verifier": code_verifier #debug
     }
 
@@ -130,28 +132,36 @@ def get_google_fit_data():
     headers = {
         "access_token": access_token
     }
+    
+# https://fitness.googleapis.com/fitness/v1/users/{userId}/dataSources/{dataSourceId}
+# https://fitness.googleapis.com/fitness/v1/users/{userId}/dataSources/{dataSourceId}
+# https://fitness.googleapis.com/fitness/v1/users/{userId}/dataSources/{dataSourceId}/datasets/{datasetId}
+# https://fitness.googleapis.com/fitness/v1/users/{userId}/dataset:aggregate
+# https://fitness.googleapis.com/fitness/v1/users/{userId}/dataSources/{dataSourceId}/dataPointChanges
 
-    goole_fit_base = "https://www.googleapis.com/fitness/v1/users/me"
+    google_fit_base = "https://www.googleapis.com/fitness/v1/users/me"
     data_type = "dataSources"
     # dataSourceID = "raw:com.google.weight:com.qingniu.arboleaf:weight"
-    dataSourceID = "com.google.weight:com.qingniu.arboleaf"
+    dataSourceID = "derived:com.google.weight:com.google.android.gms:merge_weight"
     datasets = "datasets"
-    minimumDate = "652222439"
-    maximumDate = "1636923239"
+    minimumDate = "0"
+    maximumDate = "1838338400000000000"
     date_range = '-'.join([minimumDate, maximumDate])
     url_component_list = [
-        goole_fit_base
+        google_fit_base
         , data_type
         , dataSourceID
+        # , "dataPointChanges"
         , datasets
         , date_range
+        # , "*"
     ]
 
     total_url = '/'.join(url_component_list)
-
+    print(f"total_url = {total_url}")
     response = requests.get(total_url, headers)
     print(response)
-    print(response.text)
+    # print(response.text)
     return response.text
 
 with open("google_fit_transmitter.json", "w") as file:
