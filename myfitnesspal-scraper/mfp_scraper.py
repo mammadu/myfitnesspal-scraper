@@ -59,8 +59,6 @@ class scraper:
         login_success = self.check_login_status(login_repsonse)
         return login_success
 
-
-
     def ymd_to_datetime(self, ymd):
         datetime_object = datetime.datetime.strptime(ymd, '%Y-%m-%d')
         return datetime_object
