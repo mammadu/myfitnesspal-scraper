@@ -88,7 +88,6 @@ class frontend():
         else:
             login["username"] = input("Enter myfitnesspal username: ")
             login["password"] = getpass.getpass(prompt='Enter myfitnesspal password: ')
-
         return login
 
     def scrape_myfitnesspal(self):
