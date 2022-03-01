@@ -24,11 +24,11 @@ class scraper:
 
     def check_login_status(self, login_response_page):
         login_response_content = self.get_page_content(login_response_page)
-        script = login_response_content.find('script', type="text/javascript")
-        if script != None and 'logged_in' in script.text:
-            logged_in = True
-        else:
+        script = login_response_content.find('script', id="__NEXT_DATA__")
+        if script != None and '"error":"CredentialsSignin"' in script.text:
             logged_in = False
+        else:
+            logged_in = True
         return logged_in
 
     def login(self, username, password):
@@ -51,12 +51,12 @@ class scraper:
             , "username": username
             , "password": password
             , "redirect": False
-            # , "json": True #may be need in future
+            , "json": True #may be need in future
             , "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36"
         }
 
-        login_repsonse = self.session.post(login_json_url, data=login_data)
-        login_success = self.check_login_status(login_repsonse)
+        login_response = self.session.post(login_json_url, data=login_data)
+        login_success = self.check_login_status(login_response)
         return login_success
 
 
