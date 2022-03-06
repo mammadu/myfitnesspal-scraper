@@ -1,4 +1,3 @@
-from cgi import test
 import sys
 import pathlib
 
@@ -7,16 +6,17 @@ base_path = test_path.parent
 source_path = test_path.parent.joinpath("src")
 sys.path.insert(0, str(base_path))
 sys.path.insert(0, str(source_path))
-print(sys.path)
-# print(type(sys.path[1]))
 
-# sys.path.insert(0, source_path)
-# sys.path.insert(0, base_path)
-
-#construct test object
+# setup
 import mfp_scraper
 mfps = mfp_scraper.scraper()
-
-print(mfps.session)
+full_login_info_path = base_path.joinpath("login_info.txt")
+with open(f"{full_login_info_path}", "r") as file:
+    username_line = file.readline()
+    username = username_line.split("=")[1][:-1]
+    password_line = file.readline()
+    password = password_line.split("=")[1]
 
 # Test to check if login method works
+def test_login():
+    assert mfps.login(username, password) == True
