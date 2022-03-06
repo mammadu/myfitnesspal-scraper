@@ -17,6 +17,13 @@ with open(f"{full_login_info_path}", "r") as file:
     password_line = file.readline()
     password = password_line.split("=")[1]
 
+# Test to check if login_info text file has data. Success required to run test_login()
+def test_non_empty_login_info_username():
+    assert len(username) > 0
+
+def test_non_empty_login_info_password():
+    assert len(password) > 0
+
 # Test to check if login method works
 def test_login():
     assert mfps.login(username, password) == True
