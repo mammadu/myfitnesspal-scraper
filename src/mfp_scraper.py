@@ -169,6 +169,11 @@ class scraper:
         return total_remaining_calories
 
 
+#debug
+if __name__ == "__main__":
+    scrape_test = scraper()
+    print(scrape_test.session)
+
     # def save_to_object(self, last_scraped_date, calorie_overflow):
     #     self.last_scraped_date = last_scraped_date
     #     self.calorie_overflow = calorie_overflow
