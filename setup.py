@@ -10,6 +10,7 @@ setup(
         'beautifulsoup4'
         , 'requests'
         , 'datetime'
+        , 'pytest'
         , 'pandas'
         , 'flask'
         , 'lxml'
