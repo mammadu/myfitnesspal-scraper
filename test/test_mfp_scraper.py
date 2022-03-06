@@ -2,14 +2,17 @@ import sys
 import pathlib
 
 test_path = pathlib.Path(__file__).resolve().parent
-base_path = test_path.parent
-source_path = test_path.parent.joinpath("myfitnesspal-scraper/")
-sys.path.insert(0, base_path)
-sys.path.insert(0, source_path)
+source_path = test_path.parent.joinpath("src")
+sys.path.insert(0, str(source_path))
+print(source_path)
+# print(type(sys.path[1]))
+
+# sys.path.insert(0, source_path)
+# sys.path.insert(0, base_path)
 
 #construct test object
-import mfp_scraper
-mfps = mfp_scraper.scraper()
+from mfp_scraper import scraper
+mfps = scraper()
 
 print(mfps.session())
 
