@@ -163,6 +163,7 @@ class scraper:
 
     def remaining_calories_sum(self, page_content_list):
         total_remaining_calories = 0
+
         for i in range(0, len(page_content_list)):
             current_remaining_calories = self.find_remaining_calories(page_content_list[i])
             total_remaining_calories = total_remaining_calories + current_remaining_calories

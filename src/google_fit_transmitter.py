@@ -42,7 +42,8 @@ def create_oauth_url(filepath):
     scope_list = [
         "https://www.googleapis.com/auth/fitness.nutrition.read",
         "https://www.googleapis.com/auth/fitness.nutrition.write",
-        "https://www.googleapis.com/auth/fitness.body.read"
+        "https://www.googleapis.com/auth/fitness.body.read",
+        "https://www.googleapis.com/auth/fitness.body.write"
         ]
     scope = ' '.join(scope_list)
     randstate = str(random.randrange(1000))
@@ -132,17 +133,12 @@ def get_google_fit_data():
     headers = {
         "access_token": access_token
     }
-    
-# https://fitness.googleapis.com/fitness/v1/users/{userId}/dataSources/{dataSourceId}
-# https://fitness.googleapis.com/fitness/v1/users/{userId}/dataSources/{dataSourceId}
-# https://fitness.googleapis.com/fitness/v1/users/{userId}/dataSources/{dataSourceId}/datasets/{datasetId}
-# https://fitness.googleapis.com/fitness/v1/users/{userId}/dataset:aggregate
-# https://fitness.googleapis.com/fitness/v1/users/{userId}/dataSources/{dataSourceId}/dataPointChanges
 
     google_fit_base = "https://www.googleapis.com/fitness/v1/users/me"
     data_type = "dataSources"
-    # dataSourceID = "raw:com.google.weight:com.qingniu.arboleaf:weight"
-    dataSourceID = "derived:com.google.weight:com.google.android.gms:merge_weight"
+    # dataSourceID = "derived:com.google.weight:com.google.android.gms:merge_weight" #this datasource ID provides weights in kilos
+    # dataSourceID = "derived:com.google.nutrition:com.google.android.gms:merged"
+    dataSourceID = "derived:com.google.nutrition:merged"
     datasets = "datasets"
     minimumDate = "0"
     maximumDate = "1838338400000000000"
@@ -150,10 +146,9 @@ def get_google_fit_data():
     url_component_list = [
         google_fit_base
         , data_type
-        , dataSourceID
-        # , "dataPointChanges"
-        , datasets
-        , date_range
+        # , dataSourceID
+        # , datasets
+        # , date_range
         # , "*"
     ]
 
@@ -161,8 +156,25 @@ def get_google_fit_data():
     print(f"total_url = {total_url}")
     response = requests.get(total_url, headers)
     print(response)
-    # print(response.text)
+    # print(response.text) #debug
     return response.text
+
+# Testing getting aggreagate data by postin
+    # google_fit_base = "https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate"
+    # data = {
+    #     "aggregateBy": [{
+    #         "dataSourceId":
+    #         "com.google.weight"
+    #     }],
+    #     "bucketByTime": { "durationMillis": 86400000 },
+    #     "startTimeMillis": 0,
+    #     "endTimeMillis": 1838338400000
+    # }
+
+    # response = requests.post(google_fit_base, data, headers)
+    # print(response)
+    # # print(response.text) #debug
+    # return response.text
 
 with open("google_fit_transmitter.json", "w") as file:
     file.write(get_google_fit_data())
