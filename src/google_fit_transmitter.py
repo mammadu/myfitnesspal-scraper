@@ -127,18 +127,24 @@ def get_access_token(): #I will eventually have to make a remote server get the 
     token = response.json()['access_token']
     return token
 
-def get_google_fit_data():
+def create_access_token_header():
     get_authorization_code()
     access_token = get_access_token()
     headers = {
         "access_token": access_token
     }
+    return headers
+
+def get_google_fit_data():
+    headers = create_access_token_header()
 
     google_fit_base = "https://www.googleapis.com/fitness/v1/users/me"
     data_type = "dataSources"
     # dataSourceID = "derived:com.google.weight:com.google.android.gms:merge_weight" #this datasource ID provides weights in kilos
-    # dataSourceID = "derived:com.google.nutrition:com.google.android.gms:merged"
-    dataSourceID = "derived:com.google.nutrition:merged"
+    dataSourceID = "derived:com.google.nutrition:com.google.android.gms:merged"
+    # dataSourceID = "derived:com.google.nutrition:com.google.android.gms:aggregated"
+    # dataSourceID = "derived:com.google.nutrition:merged"
+    dataTypeName = "com.google.weight"
     datasets = "datasets"
     minimumDate = "0"
     maximumDate = "1838338400000000000"
@@ -146,35 +152,21 @@ def get_google_fit_data():
     url_component_list = [
         google_fit_base
         , data_type
-        # , dataSourceID
-        # , datasets
+        , dataSourceID
+        # , dataTypeName
+        , datasets
         # , date_range
-        # , "*"
+        , "*"
     ]
 
     total_url = '/'.join(url_component_list)
+    # total_url = total_url + f"?dataTypeName={dataTypeName}" #testing getting a datasourfe of specific datatype
     print(f"total_url = {total_url}")
     response = requests.get(total_url, headers)
     print(response)
     # print(response.text) #debug
     return response.text
 
-# Testing getting aggreagate data by postin
-    # google_fit_base = "https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate"
-    # data = {
-    #     "aggregateBy": [{
-    #         "dataSourceId":
-    #         "com.google.weight"
-    #     }],
-    #     "bucketByTime": { "durationMillis": 86400000 },
-    #     "startTimeMillis": 0,
-    #     "endTimeMillis": 1838338400000
-    # }
-
-    # response = requests.post(google_fit_base, data, headers)
-    # print(response)
-    # # print(response.text) #debug
-    # return response.text
-
-with open("google_fit_transmitter.json", "w") as file:
-    file.write(get_google_fit_data())
+if __name__ == "__main__":
+    with open("google_fit_transmitter.json", "w") as file:
+        file.write(get_google_fit_data())
