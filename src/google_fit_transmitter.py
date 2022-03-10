@@ -135,6 +135,17 @@ def create_access_token_header():
     }
     return headers
 
+#Functions to implement
+# def create_datasource():
+
+# def get_datasources():
+
+# def get_dataset():
+
+# def patch_dataset():
+
+# def aggregate():
+
 def get_google_fit_data():
     headers = create_access_token_header()
 
