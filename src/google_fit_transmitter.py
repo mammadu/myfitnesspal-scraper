@@ -16,11 +16,6 @@ import json, requests, random, webbrowser, subprocess, os, time, string, hashlib
 
 path = pathlib.Path(__file__)
 
-def create_code_verifier(code_size):
-    allowed_chars = string.ascii_letters + string.digits + '-._~'
-    code_verifier = ''.join(random.choice(allowed_chars) for i in range(code_size))
-    return code_verifier
-
 #debug
 # def create_code_challenge(code_verifier):
 #     code_verifier_to_bytes = code_verifier.encode('utf-8') #convert code_verifier to bytes
@@ -47,12 +42,6 @@ def create_oauth_url(filepath):
         ]
     scope = ' '.join(scope_list)
     randstate = str(random.randrange(1000))
-    
-    #debug
-    # code_verifier = create_code_verifier(100)
-    # with open("code_verifier.txt", "w") as file:
-    #     file.write(code_verifier)
-    # code_challenge = create_code_challenge(code_verifier)
 
     query_dict = {
         "response_type": response_type,
@@ -60,11 +49,6 @@ def create_oauth_url(filepath):
         "redirect_uri": redirect_uris,
         "scope": scope,
         "state": randstate,
-        
-        
-        #debug
-        # "code_challenge": code_challenge, 
-        # "code_challenge_method": "S256"
     }
 
     total_auth_uri = auth_uri + "?" + list(query_dict.items())[0][0] + "=" + list(query_dict.items())[0][1]
@@ -75,7 +59,6 @@ def create_oauth_url(filepath):
 def get_authorization_code():
     filepath = str(path.resolve().parent.parent.joinpath('client_ID.json'))
     url = create_oauth_url(filepath)
-    # print(url) #debug
     current_time = time.time()
     server = subprocess.Popen([sys.executable, './server_receiver.py'])
     webbrowser.open_new(url)
@@ -102,10 +85,7 @@ def token_post_param(filepath):
         code = file.read()
     redirect_uris = data["web"]["redirect_uris"][0]
     client_id = data["web"]["client_id"]
-    client_secret = data["web"]["client_secret"] 
-    #debug
-    # with open("code_verifier.txt", "r") as file:
-    #     code_verifier = file.read()
+    client_secret = data["web"]["client_secret"]
 
     query_dict = {
         "grant_type": grant_type,
@@ -113,8 +93,6 @@ def token_post_param(filepath):
         "redirect_uri": redirect_uris,
         "client_id": client_id,
         "client_secret": client_secret
-        #debug
-        # , "code_verifier": code_verifier #debug
     }
 
     return query_dict
@@ -135,49 +113,87 @@ def create_access_token_header():
     }
     return headers
 
+def compose_url(url_base, path_list):
+    url_components = path_list.copy()
+    url_components.insert(0,url_base)
+    total_url = '/'.join(url_components)
+    return total_url
+
 #Functions to implement
 # def create_datasource():
 
-# def get_datasources():
+def get_list_of_datasources():
+    headers = create_access_token_header()
 
-# def get_dataset():
+    google_fit_base = "https://www.googleapis.com/fitness/v1/users/me"
+    datasource = "dataSources"
+    url_component_list = [datasource]
+    total_url = compose_url(google_fit_base, url_component_list)
+    print(f"total_url = {total_url}")
+
+    response = requests.get(total_url, headers)
+    print(response)
+    return response.text
+
+def get_dataset(datasource_id, dataset_id):
+    headers = create_access_token_header()
+
+    google_fit_base = "https://www.googleapis.com/fitness/v1/users/me"
+    datasource = "dataSources"
+    datasets = "datasets"
+    url_component_list = [
+        datasource
+        , datasource_id
+        , datasets
+        , dataset_id
+    ]
+    total_url = compose_url(google_fit_base, url_component_list)
+    print(f"total_url = {total_url}")
+
+    response = requests.get(total_url, headers)
+    print(response)
+    return response.text
 
 # def patch_dataset():
 
 # def aggregate():
 
-def get_google_fit_data():
-    headers = create_access_token_header()
+# def get_google_fit_data():
+    # headers = create_access_token_header()
 
-    google_fit_base = "https://www.googleapis.com/fitness/v1/users/me"
-    data_type = "dataSources"
-    # dataSourceID = "derived:com.google.weight:com.google.android.gms:merge_weight" #this datasource ID provides weights in kilos
-    dataSourceID = "derived:com.google.nutrition:com.google.android.gms:merged"
-    # dataSourceID = "derived:com.google.nutrition:com.google.android.gms:aggregated"
-    # dataSourceID = "derived:com.google.nutrition:merged"
-    dataTypeName = "com.google.weight"
-    datasets = "datasets"
-    minimumDate = "0"
-    maximumDate = "1838338400000000000"
-    date_range = '-'.join([minimumDate, maximumDate])
-    url_component_list = [
-        google_fit_base
-        , data_type
-        , dataSourceID
-        # , dataTypeName
-        , datasets
-        # , date_range
-        , "*"
-    ]
+    # google_fit_base = "https://www.googleapis.com/fitness/v1/users/me"
+    # data_type = "dataSources"
+    # # dataSourceID = "derived:com.google.weight:com.google.android.gms:merge_weight" #this datasource ID provides weights in kilos
+    # dataSourceID = "derived:com.google.nutrition:com.google.android.gms:merged"
+    # # dataSourceID = "derived:com.google.nutrition:com.google.android.gms:aggregated"
+    # # dataSourceID = "derived:com.google.nutrition:merged"
+    # dataTypeName = "com.google.weight"
+    # datasets = "datasets"
+    # minimumDate = "0"
+    # maximumDate = "1838338400000000000"
+    # date_range = '-'.join([minimumDate, maximumDate])
+    # url_component_list = [
+    #     google_fit_base
+    #     , data_type
+    #     , dataSourceID
+    #     # , dataTypeName
+    #     , datasets
+    #     # , date_range
+    #     , "*"
+    # ]
 
-    total_url = '/'.join(url_component_list)
-    # total_url = total_url + f"?dataTypeName={dataTypeName}" #testing getting a datasourfe of specific datatype
-    print(f"total_url = {total_url}")
-    response = requests.get(total_url, headers)
-    print(response)
-    # print(response.text) #debug
-    return response.text
+    # total_url = '/'.join(url_component_list)
+    # # total_url = total_url + f"?dataTypeName={dataTypeName}" #testing getting a datasourfe of specific datatype
+    # print(f"total_url = {total_url}")
+    # response = requests.get(total_url, headers)
+    # print(response)
+    # # print(response.text) #debug
+    # return response.text
 
+# debug. Currently testing get_dataset function
 if __name__ == "__main__":
+    nutrition_data_source_id = "derived:com.google.nutrition:com.google.android.gms:merged"
+    weight_data_source_id = "derived:com.google.weight:com.google.android.gms:merge_weight"
+    dataset_id = "*"
     with open("google_fit_transmitter.json", "w") as file:
-        file.write(get_google_fit_data())
+        file.write(get_dataset(weight_data_source_id, dataset_id))
