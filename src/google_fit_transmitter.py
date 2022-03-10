@@ -12,19 +12,9 @@
 # Use authorization token to write nutritional data to google fit
 
 
-import json, requests, random, webbrowser, subprocess, os, time, string, hashlib, base64, pathlib, sys
+import json, requests, random, webbrowser, subprocess, os, time, pathlib, sys
 
 path = pathlib.Path(__file__)
-
-#debug
-# def create_code_challenge(code_verifier):
-#     code_verifier_to_bytes = code_verifier.encode('utf-8') #convert code_verifier to bytes
-#     hashed_object = hashlib.sha256(code_verifier_to_bytes) #create hash object from code_verifier_byres
-#     digest_hashed_str = hashed_object.digest() #get hashed_object in bytes
-#     base64_hexdigest_hashed_str = base64.urlsafe_b64encode(digest_hashed_str) #convert byte object to base64 byte string
-#     code_challenge = str(base64_hexdigest_hashed_str, 'utf-8') #create utf-8 string from byte string
-#     code_challenge = code_challenge[:-1] #for some reason, an '=' is added to the end of the code string, this line removes it
-#     return code_challenge
 
 def create_oauth_url(filepath):
     with open(filepath) as client_id:
@@ -120,19 +110,28 @@ def compose_url(url_base, path_list):
     return total_url
 
 #Functions to implement
-# def create_datasource():
-
-def get_list_of_datasources():
-    headers = create_access_token_header()
-
+def create_datasource(data):
     google_fit_base = "https://www.googleapis.com/fitness/v1/users/me"
     datasource = "dataSources"
     url_component_list = [datasource]
     total_url = compose_url(google_fit_base, url_component_list)
     print(f"total_url = {total_url}")
 
+    headers = create_access_token_header()
+    response = requests.post(total_url, json=data, params=headers)
+    print(response) #debug
+    return response.text
+
+def get_list_of_datasources():
+    google_fit_base = "https://www.googleapis.com/fitness/v1/users/me"
+    datasource = "dataSources"
+    url_component_list = [datasource]
+    total_url = compose_url(google_fit_base, url_component_list)
+    print(f"total_url = {total_url}")
+
+    headers = create_access_token_header()
     response = requests.get(total_url, headers)
-    print(response)
+    print(response) #debug
     return response.text
 
 def get_dataset(datasource_id, dataset_id):
@@ -150,8 +149,8 @@ def get_dataset(datasource_id, dataset_id):
     total_url = compose_url(google_fit_base, url_component_list)
     print(f"total_url = {total_url}")
 
-    response = requests.get(total_url, headers)
-    print(response)
+    response = requests.get(total_url, params=headers)
+    print(response) #debug
     return response.text
 
 # def patch_dataset():
@@ -192,8 +191,39 @@ def get_dataset(datasource_id, dataset_id):
 
 # debug. Currently testing get_dataset function
 if __name__ == "__main__":
-    nutrition_data_source_id = "derived:com.google.nutrition:com.google.android.gms:merged"
-    weight_data_source_id = "derived:com.google.weight:com.google.android.gms:merge_weight"
-    dataset_id = "*"
+    data = {
+        "application": {
+            "name": "test"
+        },
+        "dataType": {
+            "field": [
+            {
+                "name": "nutrients",
+                "format": "map"
+            },
+            {
+                "name": "meal_type",
+                "format": "integer",
+                "optional": True
+            },
+            {
+                "name": "food_item",
+                "format": "string",
+                "optional": True
+            }
+            ],
+            "name": "com.google.nutrition"
+        },
+        "device": {
+            "manufacturer": "n/a",
+            "model": "n/a",
+            "type": "unknown",
+            "uid": "n/a",
+            "version": ""
+        },
+        "type": "derived"
+    }
     with open("google_fit_transmitter.json", "w") as file:
-        file.write(get_dataset(weight_data_source_id, dataset_id))
+        # file.write(create_datasource(data))
+        # file.write(get_list_of_datasources())
+        file.write(get_dataset("derived:com.google.weight:com.google.android.gms:merge_weight", "*"))
