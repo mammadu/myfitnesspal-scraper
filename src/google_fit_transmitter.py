@@ -122,6 +122,18 @@ def create_datasource(data):
     print(response) #debug
     return response.text
 
+def delete_datasource(datasource_id):
+    google_fit_base = "https://www.googleapis.com/fitness/v1/users/me"
+    datasource = "dataSources"
+    url_component_list = [datasource, datasource_id]
+    total_url = compose_url(google_fit_base, url_component_list)
+    print(f"total_url = {total_url}")
+
+    headers = create_access_token_header()
+    response = requests.delete(total_url, params=headers)
+    print(response) #debug
+    return response.text
+
 def get_list_of_datasources():
     google_fit_base = "https://www.googleapis.com/fitness/v1/users/me"
     datasource = "dataSources"
@@ -155,39 +167,8 @@ def get_dataset(datasource_id, dataset_id):
 
 # def patch_dataset():
 
+
 # def aggregate():
-
-# def get_google_fit_data():
-    # headers = create_access_token_header()
-
-    # google_fit_base = "https://www.googleapis.com/fitness/v1/users/me"
-    # data_type = "dataSources"
-    # # dataSourceID = "derived:com.google.weight:com.google.android.gms:merge_weight" #this datasource ID provides weights in kilos
-    # dataSourceID = "derived:com.google.nutrition:com.google.android.gms:merged"
-    # # dataSourceID = "derived:com.google.nutrition:com.google.android.gms:aggregated"
-    # # dataSourceID = "derived:com.google.nutrition:merged"
-    # dataTypeName = "com.google.weight"
-    # datasets = "datasets"
-    # minimumDate = "0"
-    # maximumDate = "1838338400000000000"
-    # date_range = '-'.join([minimumDate, maximumDate])
-    # url_component_list = [
-    #     google_fit_base
-    #     , data_type
-    #     , dataSourceID
-    #     # , dataTypeName
-    #     , datasets
-    #     # , date_range
-    #     , "*"
-    # ]
-
-    # total_url = '/'.join(url_component_list)
-    # # total_url = total_url + f"?dataTypeName={dataTypeName}" #testing getting a datasourfe of specific datatype
-    # print(f"total_url = {total_url}")
-    # response = requests.get(total_url, headers)
-    # print(response)
-    # # print(response.text) #debug
-    # return response.text
 
 # debug. Currently testing get_dataset function
 if __name__ == "__main__":
@@ -214,16 +195,16 @@ if __name__ == "__main__":
             ],
             "name": "com.google.nutrition"
         },
-        "device": {
-            "manufacturer": "n/a",
-            "model": "n/a",
-            "type": "unknown",
-            "uid": "n/a",
-            "version": ""
-        },
+        # "device": {
+        #     # "manufacturer": "n/a",
+        #     # "model": "n/a",
+        #     # "type": "unknown",
+        #     # "uid": "",
+        #     # "version": ""
+        # },
         "type": "derived"
     }
     with open("google_fit_transmitter.json", "w") as file:
         # file.write(create_datasource(data))
         # file.write(get_list_of_datasources())
-        file.write(get_dataset("derived:com.google.weight:com.google.android.gms:merge_weight", "*"))
+        # file.write(get_dataset("derived:com.google.nutrition:3d54f750:n/a:n/a:18a3e27c", "*"))
