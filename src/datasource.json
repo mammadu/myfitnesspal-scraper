@@ -1,0 +1,25 @@
+{
+    "application": {
+        "name": "mfp_scraper"
+    },
+    "dataType": {
+        "field": [
+        {
+            "name": "nutrients",
+            "format": "map"
+        },
+        {
+            "name": "meal_type",
+            "format": "integer",
+            "optional": "True"
+        },
+        {
+            "name": "food_item",
+            "format": "string",
+            "optional": "True"
+        }
+        ],
+        "name": "com.google.nutrition"
+    },
+    "type": "derived"
+}

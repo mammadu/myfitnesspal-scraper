@@ -165,46 +165,32 @@ def get_dataset(datasource_id, dataset_id):
     print(response) #debug
     return response.text
 
-# def patch_dataset():
+def patch_dataset(data, datasource_id, dataset_id=""):
+    google_fit_base = "https://www.googleapis.com/fitness/v1/users/me"
+    datasource = "dataSources"
+    datasets = "datasets"
+    url_component_list = [
+        datasource
+        , datasource_id
+        , datasets
+        , dataset_id
+    ]
+    total_url = compose_url(google_fit_base, url_component_list)
+    print(f"total_url = {total_url}")
 
+    headers = create_access_token_header()
+    response = requests.patch(total_url, json=data, params=headers)
+    print(response) #debug
+    return response.text
 
 # def aggregate():
 
 # debug. Currently testing get_dataset function
 if __name__ == "__main__":
-    data = {
-        "application": {
-            "name": "test"
-        },
-        "dataType": {
-            "field": [
-            {
-                "name": "nutrients",
-                "format": "map"
-            },
-            {
-                "name": "meal_type",
-                "format": "integer",
-                "optional": True
-            },
-            {
-                "name": "food_item",
-                "format": "string",
-                "optional": True
-            }
-            ],
-            "name": "com.google.nutrition"
-        },
-        # "device": {
-        #     # "manufacturer": "n/a",
-        #     # "model": "n/a",
-        #     # "type": "unknown",
-        #     # "uid": "",
-        #     # "version": ""
-        # },
-        "type": "derived"
-    }
+    with open("datasource.json", "r") as file:
+        datasource = json.load(file)
     with open("google_fit_transmitter.json", "w") as file:
-        # file.write(create_datasource(data))
+        # file.write(json.dumps(datasource))
+        file.write(create_datasource(datasource))
         # file.write(get_list_of_datasources())
         # file.write(get_dataset("derived:com.google.nutrition:3d54f750:n/a:n/a:18a3e27c", "*"))
