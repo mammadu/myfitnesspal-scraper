@@ -165,7 +165,7 @@ def get_dataset(datasource_id, dataset_id):
     print(response) #debug
     return response.text
 
-def patch_dataset(data, datasource_id, dataset_id=""):
+def patch_dataset(data, datasource_id, dataset_id="*"):
     google_fit_base = "https://www.googleapis.com/fitness/v1/users/me"
     datasource = "dataSources"
     datasets = "datasets"
@@ -187,10 +187,13 @@ def patch_dataset(data, datasource_id, dataset_id=""):
 
 # debug. Currently testing get_dataset function
 if __name__ == "__main__":
-    with open("datasource.json", "r") as file:
-        datasource = json.load(file)
+    # with open("datasource.json", "r") as file:
+    #     datasource = json.load(file)
+    with open("data.json", "r") as file:
+        data = json.load(file)
     with open("google_fit_transmitter.json", "w") as file:
-        # file.write(json.dumps(datasource))
-        file.write(create_datasource(datasource))
+        # file.write(create_datasource(datasource))
+        # file.write(delete_datasource("derived:com.google.nutrition:420385216741"))
         # file.write(get_list_of_datasources())
-        # file.write(get_dataset("derived:com.google.nutrition:3d54f750:n/a:n/a:18a3e27c", "*"))
+        file.write(get_dataset("derived:com.google.nutrition:420385216741", "*"))
+        # file.write(patch_dataset(data, "derived:com.google.nutrition:420385216741"))
