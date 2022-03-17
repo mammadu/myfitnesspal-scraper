@@ -11,12 +11,12 @@
         {
             "name": "meal_type",
             "format": "integer",
-            "optional": "True"
+            "optional": "true"
         },
         {
             "name": "food_item",
             "format": "string",
-            "optional": "True"
+            "optional": "true"
         }
         ],
         "name": "com.google.nutrition"
