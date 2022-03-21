@@ -54,13 +54,24 @@ def test_html_format_food_diary():
         test_page_soup = bs(test_page_text, "lxml")
     test_food = test_page_soup.find('tbody').find('tr').nextSibling.nextSibling.find('td', {'class': "first"})
     
-    url = "https://www.myfitnesspal.com/reports/printable_diary/mammadu?from=2020-03-20&to=2020-03-20"
+    url = "https://www.myfitnesspal.com/reports/printable_diary/mammadu?from=2020-03-20&to=2020-03-21"
     current_page_soup = mfps.get_page_content_from_url(url)
     current_food = current_page_soup.find('tbody').find('tr').nextSibling.nextSibling.find('td', {'class': "first"})
 
     assert test_food == current_food
 
 
-# # Test to see if mfpscraper can convert scraped page to json
-# def test_to_scrape_nutrient_data:
-#     test_page+page = test_files_path.joinpath("login_info.txt")
+# Test to see if mfpscraper can convert scraped page to json
+def test_to_scrape_nutrient_data():
+    mfps = mfp_scraper.scraper()
+    login_info = get_login(login_info_path)
+    mfps.login(login_info["username"], login_info["password"])
+
+    test_page_path = str(path_list["test_files_path"].joinpath("Printable Nutrition Report for Mammadu.html"))
+    with open(test_page_path, "r") as file:
+        test_page_text = file.read()
+        test_page_soup = bs(test_page_text, "lxml")
+    mfps.get_nutrition_data(test_page_soup)
+
+
+    assert mfps.get_nutrition_data(test_page_soup) == test_nutrition_data.json

@@ -6,9 +6,14 @@ class chrono:
         datetime_object = datetime.datetime.strptime(ymd, '%Y-%m-%d')
         return datetime_object
 
+
     def datetime_to_ymd(self, datetime_object):
         formatted_day = datetime_object.strftime("%Y-%m-%d")
         return formatted_day
+
+    def mdy_to_datetime(self,mdy):
+        datetime_object = datetime.datetime.strptime(mdy, '%B %d, %Y')
+        return datetime_object
 
     def list_of_dates(self, start_date, end_date):
 

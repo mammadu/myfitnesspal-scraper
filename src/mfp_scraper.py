@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup as bs
 import requests
 import datetime
 import pandas as pd
+import chrono
 
 
 class scraper:
@@ -139,6 +140,36 @@ class scraper:
             page_content = self.get_page_content_from_url(list_of_urls[i])
             page_content_list.append(page_content)
         return page_content_list
+
+    def get_nutrition_data(self, page):
+        #move through html of page
+        #gather relevant data of nutrition_dict
+        nutrition_dict = {
+            "date": []
+            , "meal time": []
+            , "food name": []
+            , "calories": []
+            , "carbs": []
+            , "fat": []
+            , "protein": []
+            , "cholesterol": []
+            , "sodium": []
+            , "sugars": []
+            , "fiber": []
+        }
+        content = page.find(id = 'content')
+        print(content)
+        # dates = page.h2
+        # chron = chrono.chrono()
+        # index = 0
+        # for date in dates:
+            # print(date.descendants)
+        #     date_string = ''.join(date)
+        #     # print(date_string)
+        #     datetime_object = chron.mdy_to_datetime(date_string)
+        #     formatted_date = chron.datetime_to_ymd(datetime_object)
+        #     nutrition_dict['date'].append(formatted_date)
+        # print(nutrition_dict)
 
     def nutrition_dataframe(self, list_of_dates):
         nutrition_dict = {
