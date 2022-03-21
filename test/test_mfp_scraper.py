@@ -1,29 +1,66 @@
+from cgi import test
 import sys
 import pathlib
-
-test_path = pathlib.Path(__file__).resolve().parent
-base_path = test_path.parent
-source_path = test_path.parent.joinpath("src")
-sys.path.insert(0, str(base_path))
-sys.path.insert(0, str(source_path))
+from bs4 import BeautifulSoup as bs
 
 # setup
+current_working_dir = pathlib.Path(__file__).resolve().parent
+sys.path.insert(0, str(current_working_dir))
+path_list = {
+    "source_path": current_working_dir.parent.joinpath("src")
+    , "test_files_path": current_working_dir.joinpath("test_files")
+    , "base_path": current_working_dir.parent
+}
+login_info_path = path_list["test_files_path"].joinpath("login_info.txt")
+for value in path_list.values():
+    sys.path.insert(0, str(value))
 import mfp_scraper
-mfps = mfp_scraper.scraper()
-full_login_info_path = base_path.joinpath("login_info.txt")
-with open(f"{full_login_info_path}", "r") as file:
-    username_line = file.readline()
-    username = username_line.split("=")[1][:-1]
-    password_line = file.readline()
-    password = password_line.split("=")[1]
+
+def get_login(full_login_info_path):
+    login_info = {}
+    with open(f"{full_login_info_path}", "r") as file:
+        username_line = file.readline()
+        username = username_line.split("=")[1][:-1]
+        password_line = file.readline()
+        password = password_line.split("=")[1]
+    login_info["username"] = username
+    login_info["password"] = password
+    return login_info
 
 # Test to check if login_info text file has data. Success required to run test_login()
 def test_non_empty_login_info_username():
-    assert len(username) > 0
+    login_info = get_login(login_info_path)
+    assert len(login_info["username"]) > 0
 
 def test_non_empty_login_info_password():
-    assert len(password) > 0
+    login_info = get_login(login_info_path)
+    assert len(login_info["password"]) > 0
 
 # Test to check if login method works
 def test_login():
-    assert mfps.login(username, password) == True
+    mfps = mfp_scraper.scraper()
+    login_info = get_login(login_info_path)
+    assert mfps.login(login_info["username"], login_info["password"]) == True
+
+# test to see if html format of food diary has changed
+def test_html_format_food_diary():
+    mfps = mfp_scraper.scraper()
+    login_info = get_login(login_info_path)
+    mfps.login(login_info["username"], login_info["password"])
+
+    test_page_path = str(path_list["test_files_path"].joinpath("Printable Nutrition Report for Mammadu.html"))
+    with open(test_page_path, "r") as file:
+        test_page_text = file.read()
+        test_page_soup = bs(test_page_text, "lxml")
+    test_food = test_page_soup.find('tbody').find('tr').nextSibling.nextSibling.find('td', {'class': "first"})
+    
+    url = "https://www.myfitnesspal.com/reports/printable_diary/mammadu?from=2020-03-20&to=2020-03-20"
+    current_page_soup = mfps.get_page_content_from_url(url)
+    current_food = current_page_soup.find('tbody').find('tr').nextSibling.nextSibling.find('td', {'class': "first"})
+
+    assert test_food == current_food
+
+
+# # Test to see if mfpscraper can convert scraped page to json
+# def test_to_scrape_nutrient_data:
+#     test_page+page = test_files_path.joinpath("login_info.txt")
