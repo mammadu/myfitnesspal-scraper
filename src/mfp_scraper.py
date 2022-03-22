@@ -60,6 +60,11 @@ class scraper:
         login_success = self.check_login_status(login_response)
         return login_success
 
+    def get_myfitnesspal_name(self, page):
+        greeting = page.find(class_ = "MuiBox-root css-70qvj9")
+        name = greeting.contents[0].text.split()[-1]
+        return name
+
     def ymd_to_datetime(self, ymd):
         datetime_object = datetime.datetime.strptime(ymd, '%Y-%m-%d')
         return datetime_object
@@ -163,7 +168,6 @@ class scraper:
             date_string = content.contents[date].text
             datetime_object = chron.mdy_to_datetime(date_string)
             formatted_date = chron.datetime_to_ymd(datetime_object)
-            # nutrition_dict['date'].append(formatted_date)
 
             meals = content.contents[date + 2].tbody.contents
             for row in meals[1::2]:
@@ -175,27 +179,8 @@ class scraper:
                     nutrition_dict['meal time'].append(meal_time)
                     for index, key in enumerate(list(nutrition_dict.keys())[2:]):
                         nutrition_dict[key].append(row.contents[2*index+1].text)
-                        # print(row.contents)
-                        # print(row.contents[2*index+1].text, index)
-                    # print(row.contents)
-                    # print()
-
-        # with open("nutrition_page_contents.txt", "w") as file:
-        #     for index, item in enumerate(content.contents):
-        #         file.write(f"{index}:\n {str(item)}\n")
-
-        # print(type(content.contents[1]))
-        # dates = page.h2
-        # chron = chrono.chrono()
-        # index = 0
-        # for date in dates:
-            # print(date.descendants)
-        #     date_string = ''.join(date)
-        #     # print(date_string)
-        #     datetime_object = chron.mdy_to_datetime(date_string)
-        #     formatted_date = chron.datetime_to_ymd(datetime_object)
-        #     nutrition_dict['date'].append(formatted_date)
-        # print(nutrition_dict)
+        df = pd.DataFrame(nutrition_dict)
+        return df
 
     def nutrition_dataframe(self, list_of_dates):
         nutrition_dict = {

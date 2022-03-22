@@ -3,7 +3,6 @@ client_ID.json
 env
 .vscode/
 login_info.txt
-*.html
 *.code-workspace
 /dist
 myfitnesspal_scraper.egg-info/

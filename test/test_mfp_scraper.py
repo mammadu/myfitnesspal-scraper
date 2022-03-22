@@ -48,7 +48,7 @@ def test_html_format_food_diary():
     login_info = get_login(login_info_path)
     mfps.login(login_info["username"], login_info["password"])
 
-    test_page_path = str(path_list["test_files_path"].joinpath("Printable Nutrition Report for Mammadu.html"))
+    test_page_path = str(path_list["test_files_path"].joinpath("test_nutrition_report.html"))
     with open(test_page_path, "r") as file:
         test_page_text = file.read()
         test_page_soup = bs(test_page_text, "lxml")
@@ -60,6 +60,20 @@ def test_html_format_food_diary():
 
     assert test_food == current_food
 
+def test_get_myfitnesspal_name():
+    mfps = mfp_scraper.scraper()
+    
+    test_page_path = str(path_list["test_files_path"].joinpath("test_home_page.html"))
+    with open(test_page_path, "r") as file:
+        test_page_text = file.read()
+        test_page_soup = bs(test_page_text, "lxml")
+
+    myfitnesspal_name = mfps.get_myfitnesspal_name(test_page_soup)
+
+    assert myfitnesspal_name == "taver73108"
+
+
+
 
 # Test to see if mfpscraper can convert scraped page to json
 def test_to_scrape_nutrient_data():
@@ -67,11 +81,13 @@ def test_to_scrape_nutrient_data():
     login_info = get_login(login_info_path)
     mfps.login(login_info["username"], login_info["password"])
 
-    test_page_path = str(path_list["test_files_path"].joinpath("Printable Nutrition Report for Mammadu.html"))
+    test_page_path = str(path_list["test_files_path"].joinpath("test_nutrition_report.html"))
     with open(test_page_path, "r") as file:
         test_page_text = file.read()
         test_page_soup = bs(test_page_text, "lxml")
-    mfps.get_nutrition_data(test_page_soup)
+    df = mfps.get_nutrition_data(test_page_soup)
+
+    data = convert_to_google_fit(df)
 
 
-    assert mfps.get_nutrition_data(test_page_soup) == test_nutrition_data.json
+    assert data == test_nutrition_data.json
