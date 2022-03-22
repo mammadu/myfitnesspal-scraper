@@ -158,7 +158,33 @@ class scraper:
             , "fiber": []
         }
         content = page.find(id = 'content')
-        print(content)
+        chron = chrono.chrono()
+        for date in range(4, len(content.contents), 4):
+            date_string = content.contents[date].text
+            datetime_object = chron.mdy_to_datetime(date_string)
+            formatted_date = chron.datetime_to_ymd(datetime_object)
+            # nutrition_dict['date'].append(formatted_date)
+
+            meals = content.contents[date + 2].tbody.contents
+            for row in meals[1::2]:
+                class_name = row.get('class')
+                if class_name:
+                    meal_time = row.text
+                else:
+                    nutrition_dict['date'].append(formatted_date)
+                    nutrition_dict['meal time'].append(meal_time)
+                    for index, key in enumerate(list(nutrition_dict.keys())[2:]):
+                        nutrition_dict[key].append(row.contents[2*index+1].text)
+                        # print(row.contents)
+                        # print(row.contents[2*index+1].text, index)
+                    # print(row.contents)
+                    # print()
+
+        # with open("nutrition_page_contents.txt", "w") as file:
+        #     for index, item in enumerate(content.contents):
+        #         file.write(f"{index}:\n {str(item)}\n")
+
+        # print(type(content.contents[1]))
         # dates = page.h2
         # chron = chrono.chrono()
         # index = 0
