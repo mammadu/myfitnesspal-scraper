@@ -173,7 +173,8 @@ class scraper:
             for row in meals[1::2]:
                 class_name = row.get('class')
                 if class_name:
-                    meal_time = row.text
+                    meal_time = row.get_text()
+                    meal_time = meal_time[1:-1]
                 else:
                     nutrition_dict['date'].append(formatted_date)
                     nutrition_dict['meal time'].append(meal_time)
@@ -182,26 +183,26 @@ class scraper:
         df = pd.DataFrame(nutrition_dict)
         return df
 
-    def nutrition_dataframe(self, list_of_dates):
-        nutrition_dict = {
-            "date": list_of_dates,
-            "total calories": [],
-            "goal calories": [],
-            "remaining calories": []
-        }
+    # def nutrition_dataframe(self, list_of_dates):
+    #     nutrition_dict = {
+    #         "date": list_of_dates,
+    #         "total calories": [],
+    #         "goal calories": [],
+    #         "remaining calories": []
+    #     }
 
-        url_list = self.list_of_urls(list_of_dates)
-        page_content_list = self.get_multiple_page_content(url_list)
-        for i in range(0, len(page_content_list)):
-            print(f"loading row for {list_of_dates[i]}")
-            total_calorie = self.find_total_calories(page_content_list[i])
-            goal_calorie = self.find_goal_calories(page_content_list[i])
-            remaining_calorie = self.find_remaining_calories(page_content_list[i])
-            nutrition_dict["total calories"].append(total_calorie)
-            nutrition_dict["goal calories"].append(goal_calorie)
-            nutrition_dict["remaining calories"].append(remaining_calorie)
-        df = pd.DataFrame(nutrition_dict)
-        return df
+    #     url_list = self.list_of_urls(list_of_dates)
+    #     page_content_list = self.get_multiple_page_content(url_list)
+    #     for i in range(0, len(page_content_list)):
+    #         print(f"loading row for {list_of_dates[i]}")
+    #         total_calorie = self.find_total_calories(page_content_list[i])
+    #         goal_calorie = self.find_goal_calories(page_content_list[i])
+    #         remaining_calorie = self.find_remaining_calories(page_content_list[i])
+    #         nutrition_dict["total calories"].append(total_calorie)
+    #         nutrition_dict["goal calories"].append(goal_calorie)
+    #         nutrition_dict["remaining calories"].append(remaining_calorie)
+    #     df = pd.DataFrame(nutrition_dict)        
+    #     return df
 
     def remaining_calories_sum(self, page_content_list):
         total_remaining_calories = 0
@@ -235,7 +236,3 @@ if __name__ == "__main__":
     #     end_date = self.datetime_to_ymd(datetime.datetime.today())
     #     elapsed_days_list = self.list_of_dates(start_date, end_date)
     #     return elapsed_days_list
-
-
-# save data with the following columns:
-# Date	Weight	Daily calorie goal	Calorie total	Caloric excess	Monthly cumulative caloric excess

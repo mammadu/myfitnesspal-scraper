@@ -1,10 +1,7 @@
 __pycache__/
-client_ID.json
-env
 .vscode/
-login_info.txt
 *.code-workspace
 /dist
 myfitnesspal_scraper.egg-info/
-/myfitnesspal-scraper/unneeded/
-/myfitnesspal-scraper/obsolete
+client_ID.json
+/test/test_files/login_info.txt

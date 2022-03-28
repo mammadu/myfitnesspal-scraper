@@ -1,6 +1,6 @@
-from cgi import test
 import sys
 import pathlib
+import pandas
 from bs4 import BeautifulSoup as bs
 
 # setup
@@ -14,6 +14,7 @@ path_list = {
 login_info_path = path_list["test_files_path"].joinpath("login_info.txt")
 for value in path_list.values():
     sys.path.insert(0, str(value))
+
 import mfp_scraper
 
 def get_login(full_login_info_path):
@@ -43,7 +44,7 @@ def test_login():
     assert mfps.login(login_info["username"], login_info["password"]) == True
 
 # test to see if html format of food diary has changed - myfitnesspal often changes the html which can break scraping
-def test_html_format_food_diary():
+def test_html_format_printable_food_diary():
     mfps = mfp_scraper.scraper()
     login_info = get_login(login_info_path)
     mfps.login(login_info["username"], login_info["password"])
@@ -72,21 +73,38 @@ def test_get_myfitnesspal_name():
 
     assert myfitnesspal_name == "taver73108"
 
-# Test to see if mfpscraper can convert scraped page to json
-def test_to_scrape_nutrient_data():
+# Test to see if printable diary contents can be converted to dataframe
+def test_get_nutrition_data():
     mfps = mfp_scraper.scraper()
-    login_info = get_login(login_info_path)
-    mfps.login(login_info["username"], login_info["password"])
 
     test_page_path = str(path_list["test_files_path"].joinpath("test_nutrition_report.html"))
     with open(test_page_path, "r") as file:
         test_page_text = file.read()
         test_page_soup = bs(test_page_text, "lxml")
-    df = mfps.get_nutrition_data(test_page_soup)
+    df_to_test = mfps.get_nutrition_data(test_page_soup)
 
-    data = convert_to_google_fit(df)
+    csv_location = str(path_list["test_files_path"].joinpath("test_nutrition_data.csv"))
+    df_for_comparison = pandas.read_csv(csv_location, index_col=0, dtype=object)
 
-    assert data == test_nutrition_data.json
+    assert df_for_comparison.equals(df_to_test)
+
+# Test to see if mfpscraper can convert scraped page to json
+# def test_to_scrape_nutrient_data():
+#     mfps = mfp_scraper.scraper()
+#     login_info = get_login(login_info_path)
+#     mfps.login(login_info["username"], login_info["password"])
+
+#     test_page_path = str(path_list["test_files_path"].joinpath("test_nutrition_report.html"))
+#     with open(test_page_path, "r") as file:
+#         test_page_text = file.read()
+#         test_page_soup = bs(test_page_text, "lxml")
+#     df = mfps.get_nutrition_data(test_page_soup)
+
+#     data = convert_to_google_fit(df)
+
+#     assert data == test_nutrition_data.json
+
+
 
 # Test to check if excercise data is collected in myfitnesspal scraper
 
