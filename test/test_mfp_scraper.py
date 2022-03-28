@@ -42,7 +42,7 @@ def test_login():
     login_info = get_login(login_info_path)
     assert mfps.login(login_info["username"], login_info["password"]) == True
 
-# test to see if html format of food diary has changed
+# test to see if html format of food diary has changed - myfitnesspal often changes the html which can break scraping
 def test_html_format_food_diary():
     mfps = mfp_scraper.scraper()
     login_info = get_login(login_info_path)
@@ -72,9 +72,6 @@ def test_get_myfitnesspal_name():
 
     assert myfitnesspal_name == "taver73108"
 
-
-
-
 # Test to see if mfpscraper can convert scraped page to json
 def test_to_scrape_nutrient_data():
     mfps = mfp_scraper.scraper()
@@ -89,5 +86,8 @@ def test_to_scrape_nutrient_data():
 
     data = convert_to_google_fit(df)
 
-
     assert data == test_nutrition_data.json
+
+# Test to check if excercise data is collected in myfitnesspal scraper
+
+# Test to check if no data is in date range on myfitnesspal
