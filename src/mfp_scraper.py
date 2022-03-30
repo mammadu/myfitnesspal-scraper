@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup as bs
+from bs4.element import Tag as bs_tag
 
 import requests
 import datetime
@@ -164,25 +165,29 @@ class scraper:
         }
         content = page.find(id = 'content')
         chron = chrono.chrono()
-        for date in range(4, len(content.contents), 4):
-            date_string = content.contents[date].text
-            datetime_object = chron.mdy_to_datetime(date_string)
-            formatted_date = chron.datetime_to_ymd(datetime_object)
 
-            meals = content.contents[date + 2].tbody.contents
-            for row in meals[1::2]:
-                class_name = row.get('class')
-                if class_name:
-                    meal_time = row.get_text()
-                    meal_time = meal_time[1:-1]
-                else:
-                    nutrition_dict['date'].append(formatted_date)
-                    nutrition_dict['meal time'].append(meal_time)
-                    for index, key in enumerate(list(nutrition_dict.keys())[2:]):
-                        nutrition_dict[key].append(row.contents[2*index+1].text)
+        for index, item in enumerate(content.contents):
+            if isinstance(item, bs_tag):
+                id = item.get('id')
+                if id == 'date':
+                    date_string = item.text
+                    datetime_object = chron.mdy_to_datetime(date_string)
+                    formatted_date = chron.datetime_to_ymd(datetime_object)
+                elif id == 'food':
+                    for index, row in enumerate(item.tbody.contents):
+                        if isinstance(row, bs_tag):
+                            row_class_name = row.get('class')
+                            if row_class_name:
+                                meal_time = row.get_text()
+                                meal_time = meal_time[1:-1]
+                            else:
+                                nutrition_dict['date'].append(formatted_date)
+                                nutrition_dict['meal time'].append(meal_time)
+                                for index, key in enumerate(list(nutrition_dict.keys())[2:]):
+                                    nutrition_dict[key].append(row.contents[2*index+1].text)
         df = pd.DataFrame(nutrition_dict)
         return df
-
+        
     # def nutrition_dataframe(self, list_of_dates):
     #     nutrition_dict = {
     #         "date": list_of_dates,
