@@ -11,7 +11,7 @@ path_list = {
     , "test_files_path": current_working_dir.joinpath("test_files")
     , "base_path": current_working_dir.parent
 }
-login_info_path = path_list["test_files_path"].joinpath("login_info.txt")
+login_info_path = path_list["base_path"].joinpath("login_info.txt")
 for value in path_list.values():
     sys.path.insert(0, str(value))
 
