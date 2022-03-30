@@ -88,16 +88,19 @@ def test_get_nutrition_data():
 
     assert df_for_comparison.equals(df_to_test)
 
-# Test to check if excercise data is collected in myfitnesspal scraper
+# Test to check if excercise data is NOT collected in myfitnesspal scraper
 def test_no_excercise():
     mfps = mfp_scraper.scraper()
-    test_page_path = str(path_list["test_files_path"].joinpath("test_nutrition_report (2019-03-14) to (2019-03-19).html"))
+    test_page_path = str(path_list["test_files_path"].joinpath("test_nutrition_report_exercises.html"))
     with open(test_page_path, "r") as file:
         test_page_text = file.read()
         test_page_soup = bs(test_page_text, "lxml")
     df_to_test = mfps.get_nutrition_data(test_page_soup)
-    print()
-    print(df_to_test)
+    
+    csv_location = str(path_list["test_files_path"].joinpath("test_nutrition_data_with_exercises_removed.csv"))
+    df_for_comparison = pandas.read_csv(csv_location, index_col=0, dtype=object)
+
+    assert df_for_comparison.equals(df_to_test)
 
 # Test to see if mfpscraper can convert scraped page to json
 # def test_to_scrape_nutrient_data():

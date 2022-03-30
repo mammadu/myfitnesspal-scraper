@@ -1,0 +1,37 @@
+,date,meal time,food name,calories,carbs,fat,protein,cholesterol,sodium,sugars,fiber
+0,2019-03-14,Breakfast,"Huel - Huel V1.1 Chocolate (Usa), 50 g",200,22g,7g,14g,0mg,142mg,1g,5g
+1,2019-03-14,Breakfast,"Southern Grove - Honey Roasted Peanuts, Dry Roasted, 1 oz (1/4 cup)",160,6g,13g,7g,0mg,45mg,2g,2g
+2,2019-03-14,Breakfast,"Loven Fresh Split Top Wheat - Bread, 2 slice 28g",140,28g,2g,4g,0mg,220mg,4g,2g
+3,2019-03-14,Breakfast,"Jif - Creamy - Peanut Butter, 2 tbsp",190,8g,16g,7g,0mg,140mg,3g,2g
+4,2019-03-14,Lunch,"Dunkin' Donuts - Boston Creme Donut, 2 Donut",620,78g,32g,6g,0mg,740mg,32g,2g
+5,2019-03-14,Lunch,"Southern Grove - Honey Roasted Peanuts, Dry Roasted, 1 oz (1/4 cup)",160,6g,13g,7g,0mg,45mg,2g,2g
+6,2019-03-14,Lunch,"Loven Fresh Split Top Wheat - Bread, 2 slice 28g",140,28g,2g,4g,0mg,220mg,4g,2g
+7,2019-03-14,Lunch,"Jif - Creamy - Peanut Butter, 2 tbsp",190,8g,16g,7g,0mg,140mg,3g,2g
+8,2019-03-14,Lunch,"Oranges - Orange, 1 c",62,15g,0g,1g,0mg,0mg,12g,3g
+9,2019-03-14,Lunch,"Kroger - Asparagus, 6 spears",20,3g,0g,2g,0mg,0mg,2g,1g
+10,2019-03-14,Lunch,"Kroger - Chicken, 8 oz",220,2g,6g,44g,110mg,460mg,0g,0g
+11,2019-03-15,Breakfast,"Cupcake - Cupcake, 1 cake",200,35g,6g,2g,10mg,310mg,0g,0g
+12,2019-03-15,Breakfast,"Southern Grove - Honey Roasted Peanuts, Dry Roasted, 1 oz (1/4 cup)",160,6g,13g,7g,0mg,45mg,2g,2g
+13,2019-03-15,Breakfast,"Loven Fresh Split Top Wheat - Bread, 2 slice 28g",140,28g,2g,4g,0mg,220mg,4g,2g
+14,2019-03-15,Breakfast,"Jif - Creamy - Peanut Butter, 2 tbsp",190,8g,16g,7g,0mg,140mg,3g,2g
+15,2019-03-15,Lunch,"A'viands - Indian Butter Chicken, 5 Cup","1,937",47g,111g,185g,708mg,876mg,25g,9g
+16,2019-03-15,Lunch,"Dunkin' Donuts - Boston Creme Donut, 1 Donut",310,39g,16g,3g,0mg,370mg,16g,1g
+17,2019-03-15,Lunch,"Southern Grove - Honey Roasted Peanuts, Dry Roasted, 1 oz (1/4 cup)",160,6g,13g,7g,0mg,45mg,2g,2g
+18,2019-03-15,Lunch,"Loven Fresh Split Top Wheat - Bread, 2 slice 28g",140,28g,2g,4g,0mg,220mg,4g,2g
+19,2019-03-15,Lunch,"Jif - Creamy - Peanut Butter, 2 tbsp",190,8g,16g,7g,0mg,140mg,3g,2g
+20,2019-03-16,Breakfast,"Oranges - Orange, 1 c",62,15g,0g,1g,0mg,0mg,12g,3g
+21,2019-03-16,Breakfast,"Southern Grove - Honey Roasted Peanuts, Dry Roasted, 1 oz (1/4 cup)",160,6g,13g,7g,0mg,45mg,2g,2g
+22,2019-03-16,Breakfast,"Loven Fresh Split Top Wheat - Bread, 2 slice 28g",140,28g,2g,4g,0mg,220mg,4g,2g
+23,2019-03-16,Breakfast,"Jif - Creamy - Peanut Butter, 2 tbsp",190,8g,16g,7g,0mg,140mg,3g,2g
+24,2019-03-16,Lunch,"Pbr - Beer, 48 oz",576,51g,0g,0g,--mg,--mg,0g,0g
+25,2019-03-16,Lunch,"Subway - Chocolate Chip Cookie, 2 cookie",440,60g,20g,4g,30mg,260mg,36g,2g
+26,2019-03-16,Lunch,"Subway - Sweet Onion Chicken Teriyaki - Pepper Jack, Lettuce, Onions, and
+							Green Peppers, 6 inch sub",460,64g,9g,29g,65mg,"1,090mg",19g,6g
+27,2019-03-19,Breakfast,"Oreos - Oreos, 6 cookies",320,50g,14g,2g,0mg,280mg,28g,2g
+28,2019-03-19,Breakfast,"Hershey - Reese's Peanut Butter Cups, 2 cups (1 Package)",210,24g,13g,5g,5mg,150mg,21g,1g
+29,2019-03-19,Breakfast,"avenue C - Deli Favorite Sandwich, 1 sandwich",520,43g,26g,28g,85mg,"2,169mg",5g,1g
+30,2019-03-19,Lunch,"Avenue C - Turkey Bacon Swiss Flatbread Sandwich, 10.2 oz sandwich",620,65g,25g,31g,90mg,"2,780mg",13g,3g
+31,2019-03-19,Lunch,"Mrs. Fields - Milk Chocolate Chip Cookie, Individually Wrapped, 1 cookie (60g)
+						",270,40g,11g,3g,20mg,240mg,24g,1g
+32,2019-03-19,Dinner,"Southern Grove - Honey Roasted Peanuts, Dry Roasted, 1 oz (1/4 cup)",160,6g,13g,7g,0mg,45mg,2g,2g
+33,2019-03-19,Dinner,"Chips - Chips, 13 chips",150,15g,9g,2g,0mg,170mg,1g,1g
