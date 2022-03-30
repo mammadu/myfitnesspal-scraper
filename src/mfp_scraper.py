@@ -171,6 +171,8 @@ class scraper:
                 id = item.get('id')
                 if id == 'date':
                     date_string = item.text
+                    if date_string == "No diary entries were found for this date range.":
+                        break
                     datetime_object = chron.mdy_to_datetime(date_string)
                     formatted_date = chron.datetime_to_ymd(datetime_object)
                 elif id == 'food':
@@ -187,7 +189,16 @@ class scraper:
                                     nutrition_dict[key].append(row.contents[2*index+1].text)
         df = pd.DataFrame(nutrition_dict)
         return df
-        
+
+    def get_nutrition_data_for_date_range(self, start_date, end_date):
+        home_page_url = "https://www.myfitnesspal.com/"
+        home_page_soup = self.get_page_content_from_url(home_page_url)
+        myfitnesspal_name = self.get_myfitnesspal_name(home_page_soup)
+        printable_diary_url = f"https://www.myfitnesspal.com/reports/printable_diary/{myfitnesspal_name}?from={start_date}&to={end_date}"
+        printable_diary_soup = self.get_page_content_from_url(printable_diary_url)
+        df = self.get_nutrition_data(printable_diary_soup)
+        return df
+
     # def nutrition_dataframe(self, list_of_dates):
     #     nutrition_dict = {
     #         "date": list_of_dates,

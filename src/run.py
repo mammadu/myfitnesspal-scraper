@@ -96,9 +96,9 @@ class frontend():
         login_success = scraper.login(login["username"], login["password"])
         if login_success == True:
             self.get_dates()
-            chron = chrono.chrono()
-            list_of_dates = chron.list_of_dates(self.start_date, self.end_date)
-            data = scraper.nutrition_dataframe(list_of_dates)
+            # chron = chrono.chrono()
+            # list_of_dates = chron.list_of_dates(self.start_date, self.end_date)
+            data = scraper.get_nutrition_data_for_date_range(self.start_date, self.end_date)
         else:
             print("Could not log in. Review myfitnesspal username and password")
             data = None

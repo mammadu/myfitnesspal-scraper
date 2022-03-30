@@ -102,6 +102,24 @@ def test_no_excercise():
 
     assert df_for_comparison.equals(df_to_test)
 
+# Test if page without entries creates dataframe without rows
+def test_printable_diary_without_entries():
+    mfps = mfp_scraper.scraper()
+    test_page_path = str(path_list["test_files_path"].joinpath("test_nutrition_report_without_entries.html"))
+    with open(test_page_path, "r") as file:
+        test_page_text = file.read()
+        test_page_soup = bs(test_page_text, "lxml")
+    df_to_test = mfps.get_nutrition_data(test_page_soup)
+
+    csv_location = str(path_list["test_files_path"].joinpath("test_empty_nutrition_data.csv"))
+    df_for_comparison = pandas.read_csv(csv_location, index_col=0, dtype=object)
+
+    df_to_test_is_empty = df_to_test.empty
+    df_for_comparison_is_empty = df_for_comparison.empty
+    column_equality = (df_to_test.columns == df_for_comparison.columns).all()
+
+    assert column_equality and df_to_test_is_empty and df_for_comparison_is_empty
+
 # Test to see if mfpscraper can convert scraped page to json
 # def test_to_scrape_nutrient_data():
 #     mfps = mfp_scraper.scraper()
@@ -120,5 +138,3 @@ def test_no_excercise():
 
 
 
-
-# Test to check if no data is in date range on myfitnesspal
