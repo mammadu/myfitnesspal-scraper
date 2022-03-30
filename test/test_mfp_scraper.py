@@ -91,7 +91,7 @@ def test_get_nutrition_data():
 # Test to check if excercise data is NOT collected in myfitnesspal scraper
 def test_no_excercise():
     mfps = mfp_scraper.scraper()
-    test_page_path = str(path_list["test_files_path"].joinpath("test_nutrition_report_exercises.html"))
+    test_page_path = str(path_list["test_files_path"].joinpath("test_nutrition_report_with_exercises.html"))
     with open(test_page_path, "r") as file:
         test_page_text = file.read()
         test_page_soup = bs(test_page_text, "lxml")
