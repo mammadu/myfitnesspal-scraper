@@ -11,8 +11,8 @@ This program scrapes data from myfitnesspal and saves it to various locations
 
 1. Clone this repository
 2. In terminal, navigate to the repository
-3. In terminal, type ```python3 setup.py install```
-4. Optionally Enter myfitnesspal login information into login_info.txt for ease of use
+3. In terminal, type ```python3 -m pip install -r requirements.txt```
+4. Optionally Enter myfitnesspal login information into ```login_info.txt``` for ease of use
 5. Change directory to ```./myfitnesspal-scraper```
 6. Execute 'run.py' (e.g. ```python3 run.py```)
 7. Select option 0 to scrape from myfitnesspal. Scraping must occur before all other options
@@ -40,7 +40,7 @@ This program scrapes data from myfitnesspal and saves it to various locations
 ### Gather calorie data ##
 
 - [x] Scrape from myfitnesspal
-- [ ] Speed up data collection
+- [x] Speed up data collection
 
 ### Save to various locations ##
 
