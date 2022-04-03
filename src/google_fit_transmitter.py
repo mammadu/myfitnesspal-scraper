@@ -15,6 +15,8 @@
 import json, requests, random, webbrowser, subprocess, os, time, pathlib, sys
 
 path = pathlib.Path(__file__)
+current_working_dir = path.resolve().parent
+sys.path.insert(0, str(current_working_dir))
 
 def create_oauth_url(filepath):
     with open(filepath) as client_id:
@@ -50,7 +52,8 @@ def get_authorization_code():
     filepath = str(path.resolve().parent.parent.joinpath('client_ID.json'))
     url = create_oauth_url(filepath)
     current_time = time.time()
-    server = subprocess.Popen([sys.executable, './server_receiver.py'])
+    server_receiver_path = str(current_working_dir.joinpath("server_receiver.py"))
+    server = subprocess.Popen([sys.executable, server_receiver_path])
     webbrowser.open_new(url)
 
     while (current_time > os.path.getmtime("authorization_code.txt")):
@@ -88,7 +91,7 @@ def token_post_param(filepath):
     return query_dict
 
 def get_access_token(): #I will eventually have to make a remote server get the access token to keep the client_secret private
-    filepath = '../client_ID.json'
+    filepath = str(current_working_dir.parent.joinpath('client_ID.json'))
     url = create_token_url(filepath)
     query_dict = token_post_param(filepath)
     response = requests.post(url, data = query_dict)
@@ -189,8 +192,8 @@ def patch_dataset(data, datasource_id, dataset_id="*"):
 if __name__ == "__main__":
     # with open("datasource.json", "r") as file:
     #     datasource = json.load(file)
-    with open("data.json", "r") as file:
-        data = json.load(file)
+    # with open("data.json", "r") as file:
+    #     data = json.load(file)
     with open("google_fit_transmitter.json", "w") as file:
         # file.write(create_datasource(datasource))
         # file.write(delete_datasource("derived:com.google.nutrition:420385216741"))
