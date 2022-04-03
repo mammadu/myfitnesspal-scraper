@@ -4,4 +4,5 @@ __pycache__/
 /dist
 myfitnesspal_scraper.egg-info/
 client_ID.json
-/test/test_files/login_info.txt
+**/login_info.txt
+README.md
