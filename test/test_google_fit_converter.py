@@ -17,6 +17,24 @@ for value in path_list.values():
 
 import google_fit_converter, mfp_scraper
 
+def convert
+
+def test_create_point():
+    # Load example json that works with google fit
+    json_location = str(path_list["test_files_path"].joinpath("test_point.json"))
+    with open(json_location, "r") as file:
+        comparison_point = json.load(file)
+
+    # Create input dataframe
+    csv_location = str(path_list["test_files_path"].joinpath("test_nutrition_data.csv"))
+    input_df = pandas.read_csv(csv_location, index_col=0, dtype=object)
+    row = input_df.iloc[0]
+
+    converter = google_fit_converter.Converter()
+    output_point = converter.create_point(row)
+
+    assert comparison_point == output_point
+
 def test_convert_to_json():
     # Load example json that works with google fit
     json_location = str(path_list["test_files_path"].joinpath("test_json_data.json"))
@@ -29,8 +47,8 @@ def test_convert_to_json():
 
     # convert input dataframe to google fit dataframe
     converter = google_fit_converter.Converter() #instantiate class
-    output_json = converter.convert(input_df)
+    dataSourceId = "test"
+    output_json = converter.convert(input_df, dataSourceId)
 
-
-    # # Assert converted json matches sample json
-    # assert output_json == comparison_json
+    # Assert converted json matches sample json
+    assert output_json == comparison_json

@@ -1,3 +1,6 @@
 {
-    
+    "dataSourceId": "test",
+    "maxEndTimeNs": "",
+    "minStartTimeNs": "",
+    "point": []
 }

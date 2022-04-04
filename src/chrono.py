@@ -2,14 +2,19 @@ import datetime
 
 class chrono:
 
-    def ymd_to_datetime(self, ymd):
-        datetime_object = datetime.datetime.strptime(ymd, '%Y-%m-%d')
-        return datetime_object
-
-
     def datetime_to_ymd(self, datetime_object):
         formatted_day = datetime_object.strftime("%Y-%m-%d")
         return formatted_day
+
+    def datetime_to_nanoseconds_from_epoch(self, datetime_object):
+        time_from_epoch = datetime_object - datetime.datetime(1970,1,1)
+        formatted_time = time_from_epoch.total_seconds() * 10**9
+        formatted_time = str(formatted_time)
+        return formatted_time
+
+    def ymd_to_datetime(self, ymd):
+        datetime_object = datetime.datetime.strptime(ymd, '%Y-%m-%d')
+        return datetime_object
 
     def mdy_to_datetime(self,mdy):
         datetime_object = datetime.datetime.strptime(mdy, '%B %d, %Y')

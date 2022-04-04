@@ -198,5 +198,7 @@ if __name__ == "__main__":
         # file.write(create_datasource(datasource))
         # file.write(delete_datasource("derived:com.google.nutrition:420385216741"))
         # file.write(get_list_of_datasources())
-        file.write(get_dataset("derived:com.google.nutrition:420385216741", "*"))
+        # file.write(get_dataset("derived:com.google.nutrition:420385216741", "*"))
+        file.write(get_dataset("derived:com.google.nutrition:com.google.android.gms:merged", "*"))
+        
         # file.write(patch_dataset(data, "derived:com.google.nutrition:420385216741"))
