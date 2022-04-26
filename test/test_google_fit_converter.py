@@ -17,7 +17,18 @@ for value in path_list.values():
 
 import google_fit_converter, mfp_scraper
 
-def convert
+def test_convert_date_to_nanoseconds():
+    converter = google_fit_converter.Converter()
+    date = "2020-03-20"
+    time_in_nanoseconds = converter.convert_date_to_nanoseconds(date)
+    assert time_in_nanoseconds == 1584662400000000000
+
+# def test_convert_meal_time():
+#     converter = google_fit_converter.Converter()
+#     meal_times = ["Breakfast", "Lunch", "Dinner", "Snacks", "Tacos"]
+#     for item in meal_times:
+#         item
+#     meal_time_int = converter
 
 def test_create_point():
     # Load example json that works with google fit
