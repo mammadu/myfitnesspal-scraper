@@ -5,6 +5,7 @@ import requests
 import datetime
 import pandas as pd
 import chrono
+import json
 
 
 class scraper:
@@ -62,8 +63,9 @@ class scraper:
         return login_success
 
     def get_myfitnesspal_name(self, page):
-        greeting = page.find(class_ = "MuiBox-root css-70qvj9")
-        name = greeting.contents[0].text.split()[-1]
+        script = page.find(id="__NEXT_DATA__")
+        data = json.loads(script.contents[0])
+        name = data['props']['pageProps']['session']['user']['name']
         return name
 
     def ymd_to_datetime(self, ymd):
